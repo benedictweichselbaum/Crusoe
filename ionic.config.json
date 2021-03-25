@@ -1,0 +1,8 @@
+{
+  "name": "crusoe",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular",
+  "id": "4dbfcef2"
+}
