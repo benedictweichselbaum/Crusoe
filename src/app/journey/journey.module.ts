@@ -2,11 +2,11 @@ import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { JourneysPage } from './journeys.page';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
-
-import { JourneysPageRoutingModule } from './journeys-routing.module';
+import {JourneyComponentRoutingModule} from "./journey-routing.module";
+import {JourneyComponent} from "./journey.component";
 import {CrusoeServicesModule} from "../service/services/crusoe-services.module";
+
 
 @NgModule({
   imports: [
@@ -14,10 +14,9 @@ import {CrusoeServicesModule} from "../service/services/crusoe-services.module";
     CommonModule,
     FormsModule,
     ExploreContainerComponentModule,
-    JourneysPageRoutingModule,
+    JourneyComponentRoutingModule,
     CrusoeServicesModule
   ],
-  declarations: [JourneysPage],
-  providers: []
+  declarations: [JourneyComponent]
 })
-export class JourneysPageModule {}
+export class JourneyComponentModule {}
