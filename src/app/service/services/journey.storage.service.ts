@@ -33,7 +33,20 @@ export class JourneyStorageService {
     return await this.storage.set(key, journey);
   }
 
+  public async deleteAll() {
+    return await this.storage.clear();
+  }
+
   public async delete(key: string) {
     return await this.storage.remove(key);
+  }
+
+  public async nextKey(): Promise<string> {
+    const existentIds = await this.storage.keys();
+    let maxId = 1;
+    existentIds.forEach(key => {
+      maxId = Math.max(maxId, Number(key))
+    });
+    return String(maxId + 1);
   }
 }
