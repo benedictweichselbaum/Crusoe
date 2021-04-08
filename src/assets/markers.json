@@ -1,26 +1,36 @@
 {
   "properties": [
     {
+      "journey": "string1",
       "city": "test2",
       "state": "MA",
       "long": -71.10858,
       "lat": 42.35963
     },
     {
+      "journey": "string1",
       "city": "test1",
       "state": "MA",
       "long": -71.10869,
       "lat": 42.359103
     },
     {
+      "journey": "other color",
       "city": "Boston",
       "state": "MA",
       "long": -71.110061,
       "lat": 42.360686
     },
     {
+      "journey": "other color",
       "city": "Cambridge",
       "long": -71.110448,
+      "lat": 42.360642
+    },
+    {
+      "journey": "third color",
+      "city": "Camfdfdbridge",
+      "long": -71.220448,
       "lat": 42.360642
     }
   ]
