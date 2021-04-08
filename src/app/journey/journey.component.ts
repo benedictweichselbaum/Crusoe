@@ -10,7 +10,7 @@ import {JourneyStorageService} from "../service/services/journey.storage.service
 })
 export class JourneyComponent implements OnInit {
 
-  public certainJourney: Journey = new Journey(-1, null, 'N/A', null, null, null, null, null, null, null, null)
+  public certainJourney: Journey = new Journey('-1', null, 'N/A', null, null, null, null, null, null, null, null)
 
   constructor(
     private route: ActivatedRoute,
