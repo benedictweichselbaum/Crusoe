@@ -1,4 +1,4 @@
-import {Component, Inject, Injectable, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {JourneyStorageService} from "../service/services/journey.storage.service";
 import {Journey} from "../model/journey.model";
@@ -10,7 +10,7 @@ import {Journey} from "../model/journey.model";
 })
 export class JourneysPage implements OnInit {
 
-  private journeys: Array<Journey> = []
+  public journeys: Array<Journey> = []
 
   constructor(
     private router: Router,
@@ -19,7 +19,6 @@ export class JourneysPage implements OnInit {
 
   ngOnInit(): void {
     console.warn('Test save')
-    this.storageService.create('4', new Journey(4, null, 'Norwegen', 'Europa', null, 'Das ist die Beschreibung des Norwegen Trips', null, null, null, null, null))
     this.storageService.read().then(result => {this.journeys = result; console.debug(result)});
   }
 

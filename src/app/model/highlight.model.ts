@@ -7,7 +7,7 @@ export class Highlight {
     public latitude: number,
     public longitude: number,
     public height: number,
-    public timestamp: Date,
+    public timestamp: number,
     public pictures: Array<Picture>,
     public headline: string,
     public description: string,
