@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import * as Leaflet from 'leaflet';
-import {greenIcon} from './colored-icons';
+import {ColoredIcons} from './colored-icons';
 
 @Component({
   selector: 'app-tab2',
@@ -10,14 +10,20 @@ import {greenIcon} from './colored-icons';
 /***
  * https://edupala.com/how-to-add-leaflet-map-in-ionic/
  ***/
-export class MapPage implements OnInit, OnDestroy{
+export class MapPage implements OnInit, OnDestroy {
 
   map: Leaflet.Map;
   propertyList = [];
-  constructor() {}
 
-  ngOnInit() { }
-  ionViewDidEnter() { this.leafletMap(); }
+  constructor() {
+  }
+
+  ngOnInit() {
+  }
+
+  ionViewDidEnter() {
+    this.leafletMap();
+  }
 
   leafletMap() {
     const lat = 42.000;
@@ -32,17 +38,42 @@ export class MapPage implements OnInit, OnDestroy{
       .then(res => res.json())
       .then(data => {
         this.propertyList = data.properties;
-        this.setMarkers();
+        this.setNodesAndEdgesWithColor();
       })
       .catch(err => console.error(err));
   }
 
-  setMarkers(){
-    for (const property of this.propertyList) {
-      console.log(property.city, property.lat, property.long);
-      Leaflet.marker([property.lat, property.long], {icon: greenIcon}).addTo(this.map)
-        .bindPopup(property.city)
-        .openPopup();
+  setNodesAndEdgesWithColor() {
+    const sortedMarkers = this.propertyList.sort((a, b) => a.journey.localeCompare(b.journey));
+    let index = 0;
+    let colorIndex = 0;
+    while (index < sortedMarkers.length){
+      const startNode = index;
+      let journey = sortedMarkers[index].journey;
+      while (journey === sortedMarkers[index].journey) {
+        journey = sortedMarkers[index].journey;
+        const coloredIcon = ColoredIcons.getColoredIconByIndex(colorIndex);
+        Leaflet.marker([this.propertyList[index].lat, this.propertyList[index].long], {icon: coloredIcon}).addTo(this.map)
+          .bindPopup(this.propertyList[index].city)
+          .openPopup();
+        index++;
+      }
+
+      const coordinates = [];
+      for (let node = startNode; node < index; node++){
+          coordinates.push([this.propertyList[node].lat, this.propertyList[node].long]);
+      }
+      Leaflet.polyline(coordinates, {
+        color: ColoredIcons.getColorByIndex(colorIndex),
+        width: 10,
+      }).addTo(this.map);
+
+      if (colorIndex < 9){
+        colorIndex++;
+      }
+      else {
+        colorIndex = 0;
+      }
     }
   }
 
