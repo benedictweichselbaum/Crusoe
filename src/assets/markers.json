@@ -15,6 +15,34 @@
       "lat": 42.359103
     },
     {
+      "journey": "string1",
+      "city": "test2",
+      "state": "MA",
+      "long": -71.10869,
+      "lat": 42.339103
+    },
+    {
+      "journey": "string1",
+      "city": "test3",
+      "state": "MA",
+      "long": -71.20869,
+      "lat": 42.359103
+    },
+    {
+      "journey": "string1",
+      "city": "test4",
+      "state": "MA",
+      "long": -71.10869,
+      "lat": 42.559103
+    },
+    {
+      "journey": "string1",
+      "city": "test5",
+      "state": "MA",
+      "long": -71.10869,
+      "lat": 42.409103
+    },
+    {
       "journey": "other color",
       "city": "Boston",
       "state": "MA",

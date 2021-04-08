@@ -38,29 +38,36 @@ export class MapPage implements OnInit, OnDestroy {
       .then(res => res.json())
       .then(data => {
         this.propertyList = data.properties;
-        this.setMarkersWithColor();
+        this.setNodesAndEdgesWithColor();
       })
       .catch(err => console.error(err));
   }
 
-  setMarkersWithColor() {
+  setNodesAndEdgesWithColor() {
     const sortedMarkers = this.propertyList.sort((a, b) => a.journey.localeCompare(b.journey));
     let index = 0;
     let colorIndex = 0;
     while (index < sortedMarkers.length){
+      const startNode = index;
       let journey = sortedMarkers[index].journey;
-      console.log('journey', journey);
       while (journey === sortedMarkers[index].journey) {
         journey = sortedMarkers[index].journey;
-        console.log(journey);
         const coloredIcon = ColoredIcons.getColoredIconByIndex(colorIndex);
         Leaflet.marker([this.propertyList[index].lat, this.propertyList[index].long], {icon: coloredIcon}).addTo(this.map)
           .bindPopup(this.propertyList[index].city)
           .openPopup();
-        console.log(index);
-        console.log(this.propertyList[index].city, this.propertyList[index].lat, this.propertyList[index].long);
         index++;
       }
+
+      const coordinates = [];
+      for (let node = startNode; node < index; node++){
+          coordinates.push([this.propertyList[node].lat, this.propertyList[node].long]);
+      }
+      Leaflet.polyline(coordinates, {
+        color: ColoredIcons.getColorByIndex(colorIndex),
+        width: 10,
+      }).addTo(this.map);
+
       if (colorIndex < 9){
         colorIndex++;
       }
