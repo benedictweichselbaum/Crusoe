@@ -9,7 +9,20 @@ const routes: Routes = [
     children: [
       {
         path: 'journeys',
-        loadChildren: () => import('../journeys/journeys.module').then(m => m.JourneysPageModule)
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../journeys/journeys.module').then(m => m.JourneysPageModule)
+          },
+          {
+            path: 'journey/:id',
+            loadChildren: () => import('../journey/journey.module').then(m => m.JourneyComponentModule)
+          },
+          {
+            path: 'new',
+            loadChildren: () => import('../journey-creation/journey-creation.module').then(m => m.JourneyCreationComponentModule)
+          }
+        ]
       },
       {
         path: 'map',
@@ -35,5 +48,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
 })
 export class TabsPageRoutingModule {}
