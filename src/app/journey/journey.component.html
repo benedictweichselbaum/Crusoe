@@ -15,4 +15,28 @@
       <ion-title size="large">{{certainJourney.name}}</ion-title>
     </ion-toolbar>
   </ion-header>
+  <ion-item>
+    <ion-list-header style="font-size: larger">Reise-Routen</ion-list-header>
+  </ion-item>
+  <ion-item *ngIf="certainJourney.routes.length == 0">
+    <ion-label><em>Du scheinst noch keine Route angelegt zu haben</em></ion-label>
+  </ion-item>
+  <ion-list>
+    <ion-item *ngFor="let route of certainJourney.routes" button (click)="routeToCrusoeRoute(route.index)">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{route.headline}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>{{route.description}}</ion-card-content>
+      </ion-card>
+    </ion-item>
+  </ion-list>
+  <ion-row style="height: 220px"></ion-row>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button expand="full" color="primary" (click)="newRoute()">Neue Route</ion-button>
+    <ion-button expand="full" color="primary" (click)="newHighlight()">Neues Highlight</ion-button>
+  </ion-toolbar>
+</ion-footer>

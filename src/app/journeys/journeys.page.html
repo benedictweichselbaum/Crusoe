@@ -12,20 +12,23 @@
       <ion-title size="large">Reisen</ion-title>
     </ion-toolbar>
   </ion-header>
-
-  <ion-searchbar placeholder="Suche" (ionInput)="searchJourneys($event)"></ion-searchbar>
-
-  <ion-list>
-    <ion-item *ngFor="let journey of shownJourneys" button (click)="routeToJourney(journey.key)">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-subtitle>{{journey.subtitle}}</ion-card-subtitle>
-          <ion-card-title>{{journey.name}}</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>{{journey.description}}</ion-card-content>
-      </ion-card>
-    </ion-item>
-  </ion-list>
+  <div id="container" *ngIf="journeys.length == 0">
+    <strong>Oh. Du scheinst noch keine Reise angelegt zu haben.</strong>
+  </div>
+  <div *ngIf="journeys.length != 0">
+    <ion-searchbar placeholder="Suche" (ionInput)="searchJourneys($event)"></ion-searchbar>
+    <ion-list>
+      <ion-item *ngFor="let journey of shownJourneys" button (click)="routeToJourney(journey.key)">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-subtitle>{{journey.subtitle}}</ion-card-subtitle>
+            <ion-card-title>{{journey.name}}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>{{journey.description}}</ion-card-content>
+        </ion-card>
+      </ion-item>
+    </ion-list>
+  </div>
   <ion-row style="height: 110px"></ion-row>
 </ion-content>
 

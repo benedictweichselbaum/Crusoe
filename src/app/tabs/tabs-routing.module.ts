@@ -21,6 +21,10 @@ const routes: Routes = [
           {
             path: 'new',
             loadChildren: () => import('../journey-creation/journey-creation.module').then(m => m.JourneyCreationComponentModule)
+          },
+          {
+            path: 'journey/:id/route/:index',
+            loadChildren: () => import('../route/route.module').then(m => m.RouteComponentModule)
           }
         ]
       },

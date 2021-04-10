@@ -8,6 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {IonicStorageModule} from "@ionic/storage-angular";
 import {JourneyStorageService} from "./service/services/journey.storage.service";
+import {Geolocation} from "@ionic-native/geolocation";
 
 @NgModule({
   declarations: [AppComponent],

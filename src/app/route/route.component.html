@@ -1,0 +1,48 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button (click)="routeBackToJourney()"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{currentRoute.headline}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{currentRoute.headline}}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-list>
+    <ion-list-header>Routen-Punkte</ion-list-header>
+    <ion-item *ngIf="currentRoute.points.length == 0">
+      <ion-label><em>Du hast noch keine Punkte zur Route hinzugefügt</em></ion-label>
+    </ion-item>
+    <ion-item *ngFor="let point of currentRoute.points">
+      <ion-card>
+        <ion-card-content>
+          <ion-label>Breitengrad: {{point.latitude}}</ion-label>
+          <ion-label>Längengrad: {{point.longitude}}</ion-label>
+        </ion-card-content>
+      </ion-card>
+    </ion-item>
+  </ion-list>
+  <ion-list>
+    <ion-list-header>Routen-Highlights</ion-list-header>
+    <ion-item *ngIf="currentRoute.highlights.length == 0">
+      <ion-label><em>Leider gibt es noch kein Highlight</em></ion-label>
+    </ion-item>
+    <ion-item *ngFor="let highlight of currentRoute.highlights">
+
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button expand="full" color="primary" (click)="addNewPoint()">Neuer Punkt</ion-button>
+    <ion-button expand="full" color="primary">Neues Highlight</ion-button>
+  </ion-toolbar>
+</ion-footer>
