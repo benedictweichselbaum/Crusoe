@@ -1,0 +1,59 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-title>Neues Routen-Highlight</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">Schliessen</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <form [formGroup]="routeHighlightForm">
+    <ion-item>
+      <ion-label position="floating">Headline</ion-label>
+      <ion-input type="text" formControlName="routeHighlightHeadline"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Beschreibung</ion-label>
+      <ion-input type="text" formControlName="routeHighlightDescription"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Tags</ion-label>
+    </ion-item>
+    <ion-item *ngIf="tags.length > 0">
+      <ion-label *ngFor="let tag of tags" class="journeyTag" (click)="deleteTag(tag)">{{tag}}</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-input type="text" formControlName="tag"></ion-input>
+      <ion-button (click)="addNewTag()" [disabled]="this.routeHighlightForm.get('tag').value === ''">
+        Hinzufügen
+      </ion-button>
+    </ion-item>
+  </form>
+  <ion-item>
+    <ion-label>Bilder</ion-label>
+  </ion-item>
+  <ion-item *ngIf="pictures.length == 0">
+    <ion-label><em>Füge Bilder für dein Highlight hinzu</em></ion-label>
+  </ion-item>
+  <ion-item *ngIf="pictures.length != 0">
+    <ion-row>
+      <ion-item *ngFor="let picture of pictures" button (click)="deletePicture(picture)">
+        <ion-img style="width: 10rem; height: 7rem" [src]="picture">
+        </ion-img>
+      </ion-item>
+    </ion-row>
+  </ion-item>
+  <ion-button expand="full" color="secondary" (click)="addPhoto()">
+    Bild hinzufügen
+  </ion-button>
+  <ion-row style="height: 110px"></ion-row>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button [disabled]="!routeHighlightForm.valid" type="submit" expand="full" color="primary" (click)="saveNewRouteHighlight()">
+      Highlight hinzufügen
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

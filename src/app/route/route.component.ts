@@ -5,7 +5,10 @@ import {Highlight} from "../model/highlight.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {JourneyStorageService} from "../service/services/journey.storage.service";
 import {Journey} from "../model/journey.model";
-import {Geolocation} from "@ionic-native/geolocation/ngx";
+import {Geolocation, Geoposition} from "@ionic-native/geolocation/ngx";
+import {ModalController} from "@ionic/angular";
+import {RouteHighlightModalComponent} from "./route-highlight-modal/route-highlight-modal.component";
+import {CrusoeGeolocationService} from "../service/services/crusoe-geolocation.service";
 
 @Component({
   selector: 'app-route',
@@ -21,7 +24,8 @@ export class RouteComponent implements OnInit {
     private router: Router,
     private storageService: JourneyStorageService,
     private route: ActivatedRoute,
-    private geolocation: Geolocation
+    public geolocationService: CrusoeGeolocationService,
+    public modalController: ModalController
   ) { }
 
   ngOnInit() {
@@ -37,17 +41,25 @@ export class RouteComponent implements OnInit {
     this.router.navigate(['tabs', 'journeys', 'journey', this.route.snapshot.paramMap.get('id')])
   }
 
-  addNewPoint() {
-    let longitude = 0;
-    let latitude = 0;
-    let height = 0;
-    this.geolocation.getCurrentPosition().then(response => {
-      console.log(response.coords.latitude)
-      longitude = response.coords.longitude;
-      latitude = response.coords.latitude;
-      height = response.coords.altitude;
-      this.currentRoute.points.push(new Point(latitude, longitude, height, Date.now()));
-      this.storageService.update(this.currentJourney.key, this.currentJourney);
+  async addNewPoint() {
+    const position: Geoposition = await this.geolocationService.getCurrentGeolocation();
+    this.currentRoute.points.push(new Point(position.coords.latitude, position.coords.longitude, position.coords.altitude, Date.now()));
+    await this.storageService.update(this.currentJourney.key, this.currentJourney);
+  }
+
+  convertToReadableDate(dateNumber: number): string {
+    return new Date(dateNumber).toLocaleString();
+  }
+
+  async newHighlight() {
+    await this.storageService.readSingleJourney(this.route.snapshot.paramMap.get('id')).then(result => this.currentJourney = result);
+    const modal = await this.modalController.create({
+      component: RouteHighlightModalComponent,
+      componentProps: {
+        'journey': this.currentJourney,
+        'route': this.currentRoute
+      }
     });
+    return await modal.present();
   }
 }

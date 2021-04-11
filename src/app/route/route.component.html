@@ -16,6 +16,26 @@
     </ion-toolbar>
   </ion-header>
   <ion-list>
+    <ion-list-header>Routen-Highlights</ion-list-header>
+    <ion-item *ngIf="currentRoute.highlights.length == 0">
+      <ion-label><em>Leider gibt es noch kein Highlight</em></ion-label>
+    </ion-item>
+    <ion-item *ngFor="let highlight of currentRoute.highlights">
+      <ion-card>
+        <ion-img *ngIf="highlight.pictures.length > 0" [src]="highlight.pictures[0].path"></ion-img>
+        <ion-card-header>
+          <ion-card-title>{{highlight.headline}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-text>{{highlight.description}}</ion-text>
+          <ion-label>Breitengrad: {{highlight.latitude}}</ion-label>
+          <ion-label>Längengrad: {{highlight.longitude}}</ion-label>
+          <ion-label>Zeitpunkt: {{convertToReadableDate(highlight.timestamp)}}</ion-label>
+        </ion-card-content>
+      </ion-card>
+    </ion-item>
+  </ion-list>
+  <ion-list>
     <ion-list-header>Routen-Punkte</ion-list-header>
     <ion-item *ngIf="currentRoute.points.length == 0">
       <ion-label><em>Du hast noch keine Punkte zur Route hinzugefügt</em></ion-label>
@@ -25,24 +45,17 @@
         <ion-card-content>
           <ion-label>Breitengrad: {{point.latitude}}</ion-label>
           <ion-label>Längengrad: {{point.longitude}}</ion-label>
+          <ion-label>Zeitpunkt: {{convertToReadableDate(point.timestamp)}}</ion-label>
         </ion-card-content>
       </ion-card>
     </ion-item>
   </ion-list>
-  <ion-list>
-    <ion-list-header>Routen-Highlights</ion-list-header>
-    <ion-item *ngIf="currentRoute.highlights.length == 0">
-      <ion-label><em>Leider gibt es noch kein Highlight</em></ion-label>
-    </ion-item>
-    <ion-item *ngFor="let highlight of currentRoute.highlights">
-
-    </ion-item>
-  </ion-list>
+  <ion-row style="height: 110px"></ion-row>
 </ion-content>
 
 <ion-footer>
   <ion-toolbar>
+    <ion-button expand="full" color="primary" (click)="newHighlight()">Neues Highlight</ion-button>
     <ion-button expand="full" color="primary" (click)="addNewPoint()">Neuer Punkt</ion-button>
-    <ion-button expand="full" color="primary">Neues Highlight</ion-button>
   </ion-toolbar>
 </ion-footer>
