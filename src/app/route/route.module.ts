@@ -1,12 +1,13 @@
 import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {CrusoeServicesModule} from "../service/services/crusoe-services.module";
 import {RouteComponent} from "./route.component";
 import {RouteComponentRoutingModule} from "./route-routing.module";
 import {Geolocation} from "@ionic-native/geolocation/ngx";
+import {RouteHighlightModalComponent} from "./route-highlight-modal/route-highlight-modal.component";
 
 @NgModule({
   imports: [
@@ -14,9 +15,10 @@ import {Geolocation} from "@ionic-native/geolocation/ngx";
     CommonModule,
     FormsModule,
     RouteComponentRoutingModule,
-    CrusoeServicesModule
+    CrusoeServicesModule,
+    ReactiveFormsModule
   ],
-  declarations: [RouteComponent],
+  declarations: [RouteComponent, RouteHighlightModalComponent],
   providers: [Geolocation]
 })
 export class RouteComponentModule {}

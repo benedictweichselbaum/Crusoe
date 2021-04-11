@@ -1,6 +1,6 @@
-import {Timestamp} from "rxjs";
-import {Picture} from "./picture.model";
 import {HighlightMisc} from "./highlight.misc.model";
+import {CameraPhoto} from "@capacitor/core";
+import {Picture} from "./picture.model";
 
 export class Highlight {
   constructor(

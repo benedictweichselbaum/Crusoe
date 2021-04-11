@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {IonicStorageModule} from "@ionic/storage-angular";
 import {JourneyStorageService} from "./journey.storage.service";
+import {CrusoeCameraService} from "./crusoe-camera.service";
+import {CrusoeGeolocationService} from "./crusoe-geolocation.service";
 
 
 
@@ -11,6 +13,6 @@ import {JourneyStorageService} from "./journey.storage.service";
     CommonModule,
     IonicStorageModule.forRoot()
   ],
-  providers: [JourneyStorageService]
+  providers: [JourneyStorageService, CrusoeCameraService, CrusoeGeolocationService]
 })
 export class CrusoeServicesModule { }
