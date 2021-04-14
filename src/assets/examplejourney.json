@@ -1,9 +1,11 @@
 {
-  "journey": [
+  "journeys": [
     {
+      "key": "1234",
       "routes": [
         {
-          "point": [
+          "index": 12345,
+          "points": [
             {
               "latitude": 48.445222,
               "longitude": 8.696216,
@@ -47,13 +49,13 @@
               "timestamp": 1617830064625
             }
           ],
-          "highlight": [
+          "highlights": [
             {
               "latitude": 48.445444,
               "longitude": 8.696824,
               "height": 1234,
               "timestamp": 1617830064527,
-              "picture": [
+              "pictures": [
                 {
                   "path": "https://www.dhbw.de/fileadmin/user_upload/Bilder_Grafiken/Standorte/HORB.jpg",
                   "caption": "Die Quälanstalt",
@@ -64,8 +66,8 @@
               ],
               "headline": "Van Hoofs Quälanstalt",
               "description": "Hier quält van Hoof die Erstsemester",
-              "misc": [],
-              "tag": [
+              "miscs": [],
+              "tags": [
                 "DHBW",
                 "van Hoof"
               ]
@@ -75,26 +77,26 @@
               "longitude": 8.686041,
               "height": 1234,
               "timestamp": 1617830065525,
-              "picture": [
+              "pictures": [
                 {
                   "path": "https://www.neckarerlebnistal.de/fileadmin/_processed_/f/a/csm_Foto_5_Stadtsilhouette_Horb_898944001d.jpg",
                   "caption": "Fluss Horb mit Schwan",
-                  "tag": [
+                  "tags": [
                     ""
                   ]
                 },
                 {
                   "path": "https://th.bing.com/th/id/OIP.jIu2kGeZJwTPDwCV41Fc_wAAAA",
                   "caption": "Großaufnahme",
-                  "tag": [
+                  "tags": [
                     ""
                   ]
                 }
               ],
               "headline": "Blick über den Fluss",
               "description": "Wunderschönes Horb",
-              "misc": [],
-              "tag": [
+              "miscs": [],
+              "tags": [
                 "DHBW",
                 "van Hoof"
               ]
@@ -102,16 +104,17 @@
           ],
           "headline": "Horber DHBW",
           "description": "Beispiel in Horb",
-          "tag": [
+          "tags": [
             "Horb",
             "DHBW"
           ],
-          "preview_picture": "https://www.dhbw.de/fileadmin/user_upload/Bilder_Grafiken/Standorte/HORB.jpg",
-          "departure_timestamp": 1617830064525,
-          "arrival_timestamp": 1617890064525
+          "previewPicture": "https://www.dhbw.de/fileadmin/user_upload/Bilder_Grafiken/Standorte/HORB.jpg",
+          "departureTimestamp": 1617830064525,
+          "arrivalTimestamp": 1617890064525
         },
         {
-          "point": [
+          "index": 12345,
+          "points": [
             {
               "latitude": 48.441626,
               "longitude": 8.684483,
@@ -143,13 +146,13 @@
               "timestamp": 1617830064525
             }
           ],
-          "highlight": [
+          "highlights": [
             {
               "latitude": 48.442530,
               "longitude": 8.686041,
               "height": 1234,
               "timestamp": 1617830064525,
-              "picture": [
+              "pictures": [
                 {
                   "path": "https://www.neckarerlebnistal.de/fileadmin/_processed_/f/a/csm_Foto_5_Stadtsilhouette_Horb_898944001d.jpg",
                   "caption": "Fluss Horb mit Schwan",
@@ -167,8 +170,8 @@
               ],
               "headline": "Blick über den Fluss",
               "description": "Wunderschönes Horb",
-              "misc": [],
-              "tag": [
+              "miscs": [],
+              "tags": [
                 "DHBW",
                 "van Hoof"
               ]
@@ -176,26 +179,27 @@
           ],
           "headline": "Am Fluss entlang",
           "description": "Eine zweite Route im Horber Beispiel",
-          "tag": [
+          "tags": [
             "Horb",
             "DHBW",
             "Fluss"
           ],
-          "preview_picture": "https://th.bing.com/th/id/OIP.jIu2kGeZJwTPDwCV41Fc_wAAAA",
-          "departure_timestamp": 1617830064525,
-          "arrival_timestamp": 1617890064525
+          "previewPicture": "https://th.bing.com/th/id/OIP.jIu2kGeZJwTPDwCV41Fc_wAAAA",
+          "departureTimestamp": 1617830064525,
+          "arrivalTimestamp": 1617890064525
         }
       ],
-      "tag": [
+      "tags": [
         "BaWü",
         "DHBW"
       ],
-      "headline": "Horb",
+      "name": "Horb",
+      "subtitle": "Unterueberschrift",
       "description": "Beispielroute",
-      "own": true,
-      "departure_timestamp": 1617830064525,
-      "arrival_timestamp": 1617890064525,
-      "highlight": [
+      "ownJourney": true,
+      "departureTimestamp": 1617830064525,
+      "arrivalTimestamp": 1617890064525,
+      "highlights": [
         {
           "latitude": 48.445444,
           "longitude": 8.706824,
@@ -204,8 +208,8 @@
           "picture": [],
           "headline": "Highlight 1",
           "description": "Routenhighlight abseits der Route",
-          "misc": [],
-          "tag": [
+          "miscs": [],
+          "tags": [
             "Horb"
           ]
         },
@@ -217,14 +221,14 @@
           "picture": [],
           "headline": "Highlight 2",
           "description": "Noch ein Highlight von Horb",
-          "misc": [],
-          "tag": [
+          "miscs": [],
+          "tags": [
             "Horb",
             "Innenstadt"
           ]
         }
       ],
-      "preview_picture": "https://www.dhbw.de/fileadmin/user_upload/Bilder_Grafiken/Standorte/HORB.jpg"
+      "previewPicture": "https://www.dhbw.de/fileadmin/user_upload/Bilder_Grafiken/Standorte/HORB.jpg"
     }
   ]
 }
