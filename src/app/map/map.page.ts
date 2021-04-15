@@ -1,7 +1,7 @@
+import {JourneyStorageService} from '../service/services/journey.storage.service';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import * as Leaflet from 'leaflet';
 import {ColoredIcons} from './colored-icons';
-import {JourneyStorageService} from '../service/services/journey.storage.service';
 import {Journey} from '../model/journey.model';
 import {Highlight} from '../model/highlight.model';
 
@@ -15,41 +15,37 @@ import {Highlight} from '../model/highlight.model';
  ***/
 export class MapPage implements OnInit, OnDestroy {
 
-  constructor(public journeyStorageService: JourneyStorageService) {
-  }
-
+  journeys: Journey[];
   map: Leaflet.Map;
-  pointsOnRoute = [];
-  journeys: Journey[] = [];
   pictureKey = 0;
 
+  constructor(private storageService: JourneyStorageService) {
+  }
+
   ngOnInit() {
+    // Um mit dem Storage zu testen: read in Journeys
+    // this.readInJourneys();
   }
 
   ionViewDidEnter() {
-    // Um mit dem Storage zu testen: read in Journeys
-    // this.readInJourneys();
     this.journeys = this.journeyMock;
-    this.leafletMap();
-    this.drawCrusoeRoute();
-  }
-
-  drawCrusoeRoute() {
-    this.setNodesAndEdgesWithColor();
-  }
-
-  leafletMap() {
     const lat = this.journeys[0].routes[0].points[0].latitude;
     const long = this.journeys[0].routes[0].points[0].longitude;
-    const zoomlevel = 15;
-    this.map = Leaflet.map('mapId').setView([lat, long], zoomlevel);
-    Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© <a href=https://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors'
-    }).addTo(this.map);
+    const zoomlevel = 18;
+    this.leafletMap(lat, long, zoomlevel);
+    this.setNodesAndEdgesJourney();
+
+    /*
+    const lat = this.route.points[0].latitude;
+        const long = this.route.points[0].longitude;
+        const zoomlevel = 18;
+        this.leafletMap(lat, long, zoomlevel);
+        this.setNodesAndEdgesRoute(this.route);
+     */
   }
 
   readInJourneys() {
-    this.journeyStorageService.read().then(result => {
+    this.storageService.read().then(result => {
       this.journeys = result;
       console.log(this.journeys);
     }).catch((error) => {
@@ -57,57 +53,19 @@ export class MapPage implements OnInit, OnDestroy {
     });
   }
 
-  setNodesAndEdgesWithColor() {
+  leafletMap(lat, long, zoomlevel) {
+    this.map = Leaflet.map('mapId').setView([lat, long], zoomlevel);
+    Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href=https://www.openstreetmap.org/copyright>OpenStreetMap</a>'
+    }).addTo(this.map);
+  }
+
+  setNodesAndEdgesJourney() {
     let index = 0;
     let colorIndex = 0;
 
     while (index < this.journeys.length) {
-      this.journeys[index].routes.forEach((route) => {
-        const sortedPoints = route.points.sort();
-        const coordinates = [];
-
-        sortedPoints.forEach((point) => {
-          coordinates.push([point.latitude, point.longitude]);
-          Leaflet.marker([point.latitude, point.longitude], {icon: ColoredIcons.getColoredIconByIndex(colorIndex)}).addTo(this.map)
-            .bindPopup(
-              '<span>Zeitpunkt: </span>' + new Date(point.timestamp).toLocaleDateString('de-DE') + '<br>' +
-              '<span>Breitengrad: </span>' + point.latitude.toString() + '<br>' +
-              '<span>Höhengrad: </span>' + point.longitude.toString() + '<br>' +
-              '<span>Höhe: </span>' + point.height
-            )
-            .openPopup();
-        });
-
-        Leaflet.polyline(coordinates, {
-          color: ColoredIcons.getColorByIndex(colorIndex),
-          width: 10,
-        }).addTo(this.map);
-
-        route.highlights.forEach((highlight) => {
-          this.pictureKey = 0;
-          let image = '';
-          if (highlight.pictures.length > 0) {
-            image = '<img id="imageView" src="' + highlight.pictures[this.pictureKey].path + '" alt="Bilder des Nutzers zum Highlight" (swipe)="swipeEvent($event, highlight)" width="100%"/>';
-          }
-
-          Leaflet.marker([highlight.latitude, highlight.longitude], {icon: ColoredIcons.getColoredIconByIndex(8)}).addTo(this.map)
-          .bindPopup(
-            image + '<br>' +
-            '<b>' + highlight.headline + '</b>' + '<br> <br>' +
-            highlight.description + '<br> <br>' +
-            '<span>Tags: </span>' + highlight.tags.toString() + '<br>' +
-            '<span>Zeitpunkt: </span>' + new Date(highlight.timestamp).toLocaleTimeString('de-DE') + '<br>' +
-            '<span>Breitengrad: </span>' + highlight.latitude.toString() + '<br>' +
-            '<span>Höhengrad: </span>' + highlight.longitude.toString() + '<br>' +
-            '<span>Höhe: </span>' + highlight.height
-          )
-          .openPopup();
-          /*if (highlight.pictures.length > 0) {
-          //listener funktioniert noch nicht
-            document.getElementById('imageView').addEventListener('swipe')
-          }*/
-        });
-      });
+      this.journeys[index].routes.forEach((route) => this.setNodesAndEdgesRoute(route, colorIndex));
 
       index++;
       if (colorIndex < 8) {
@@ -118,6 +76,56 @@ export class MapPage implements OnInit, OnDestroy {
     }
   }
 
+  setNodesAndEdgesRoute(route, colorIndex?) {
+    if (colorIndex == null){
+      colorIndex = 0;
+    }
+    const sortedPoints = route.points.sort();
+    const coordinates = [];
+
+    sortedPoints.forEach((point) => {
+      coordinates.push([point.latitude, point.longitude]);
+      Leaflet.marker([point.latitude, point.longitude], {icon: ColoredIcons.getColoredIconByIndex(colorIndex)}).addTo(this.map)
+        .bindPopup(
+          '<span>Zeitpunkt: </span>' + new Date(point.timestamp).toLocaleDateString('de-DE') + '<br>' +
+          '<span>Breitengrad: </span>' + point.latitude.toString() + '<br>' +
+          '<span>Höhengrad: </span>' + point.longitude.toString() + '<br>' +
+          '<span>Höhe: </span>' + point.height
+        )
+        .openPopup();
+    });
+
+    Leaflet.polyline(coordinates, {
+      color: ColoredIcons.getColorByIndex(colorIndex),
+      width: 10,
+    }).addTo(this.map);
+
+    route.highlights.forEach((highlight) => {
+      this.pictureKey = 0;
+      let image = '';
+      if (highlight.pictures.length > 0) {
+        image = '<img id="imageView" src="' + highlight.pictures[this.pictureKey].path + '" alt="Bilder des Nutzers zum Highlight" (swipe)="swipeEvent($event, highlight)" width="100%"/>';
+      }
+
+      Leaflet.marker([highlight.latitude, highlight.longitude], {icon: ColoredIcons.getColoredIconByIndex(8)}).addTo(this.map)
+        .bindPopup(
+          image + '<br>' +
+          '<b>' + highlight.headline + '</b>' + '<br> <br>' +
+          highlight.description + '<br> <br>' +
+          '<span>Tags: </span>' + highlight.tags.toString() + '<br>' +
+          '<span>Zeitpunkt: </span>' + new Date(highlight.timestamp).toLocaleTimeString('de-DE') + '<br>' +
+          '<span>Breitengrad: </span>' + highlight.latitude.toString() + '<br>' +
+          '<span>Höhengrad: </span>' + highlight.longitude.toString() + '<br>' +
+          '<span>Höhe: </span>' + highlight.height
+        )
+        .openPopup();
+      /*if (highlight.pictures.length > 0) {
+      //listener funktioniert noch nicht
+        document.getElementById('imageView').addEventListener('swipe')
+      }*/
+    });
+  }
+
   swipeEvent(event, highlight: Highlight) {
     if (event.direction === 2 && this.pictureKey < highlight.pictures.length) {
       this.pictureKey++;
@@ -125,41 +133,6 @@ export class MapPage implements OnInit, OnDestroy {
       myImg.src = highlight.pictures[this.pictureKey].path;
     }
   }
-
-  /*setNodesAndEdgesWithColor() {
-    let index = 0;
-    let colorIndex = 0;
-    this.pointsOnRoute = this.journey[0].route[0].point;
-    const sortedMarkers = this.pointsOnRoute.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
-    while (index < sortedMarkers.length){
-      const startNode = index;
-      let journey = sortedMarkers[index].journey;
-      while (journey === sortedMarkers[index].journey) {
-        journey = sortedMarkers[index].journey;
-        const coloredIcon = ColoredIcons.getColoredIconByIndex(colorIndex);
-        Leaflet.marker([this.pointsOnRoute[index].lat, this.pointsOnRoute[index].long], {icon: coloredIcon}).addTo(this.map)
-          .bindPopup(this.pointsOnRoute[index].city)
-          .openPopup();
-        index++;
-      }
-
-      const coordinates = [];
-      for (let node = startNode; node < index; node++){
-          coordinates.push([this.pointsOnRoute[node].lat, this.pointsOnRoute[node].long]);
-      }
-      Leaflet.polyline(coordinates, {
-        color: ColoredIcons.getColorByIndex(colorIndex),
-        width: 10,
-      }).addTo(this.map);
-
-      if (colorIndex < 9){
-        colorIndex++;
-      }
-      else {
-        colorIndex = 0;
-      }
-    }
-  }*/
 
   /** Remove map when we have multiple map object */
   ngOnDestroy() {
