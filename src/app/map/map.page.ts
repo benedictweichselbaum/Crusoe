@@ -31,17 +31,9 @@ export class MapPage implements OnInit, OnDestroy {
     this.journeys = this.journeyMock;
     const lat = this.journeys[0].routes[0].points[0].latitude;
     const long = this.journeys[0].routes[0].points[0].longitude;
-    const zoomlevel = 18;
+    const zoomlevel = 10;
     this.leafletMap(lat, long, zoomlevel);
     this.setNodesAndEdgesJourney();
-
-    /*
-    const lat = this.route.points[0].latitude;
-        const long = this.route.points[0].longitude;
-        const zoomlevel = 18;
-        this.leafletMap(lat, long, zoomlevel);
-        this.setNodesAndEdgesRoute(this.route);
-     */
   }
 
   readInJourneys() {
