@@ -23,7 +23,7 @@ export class AnalyticsPage {
     name: 'Horb am Neckar Reise',
     routes: [
       {
-        index: 12345,
+        index: 1,
         points: [
           {
             latitude: 48.445222,
@@ -126,7 +126,7 @@ export class AnalyticsPage {
         arrivalTimestamp: 1617890064525
       },
       {
-        index: 12345,
+        index: 2,
         points: [
           {
             latitude: 48.441626,
