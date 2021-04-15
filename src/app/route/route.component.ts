@@ -6,7 +6,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {JourneyStorageService} from "../service/services/journey.storage.service";
 import {Journey} from "../model/journey.model";
 import {Geolocation, Geoposition} from "@ionic-native/geolocation/ngx";
-import {ModalController} from "@ionic/angular";
+import {AlertController, ModalController} from "@ionic/angular";
 import {RouteHighlightModalComponent} from "./route-highlight-modal/route-highlight-modal.component";
 import {CrusoeGeolocationService} from "../service/services/crusoe-geolocation.service";
 import {ColoredIcons} from '../map/colored-icons';
@@ -29,7 +29,8 @@ export class RouteComponent implements OnInit, OnDestroy {
     private storageService: JourneyStorageService,
     private route: ActivatedRoute,
     public geolocationService: CrusoeGeolocationService,
-    public modalController: ModalController
+    public modalController: ModalController,
+    private alertController: AlertController
   ) { }
 
   ngOnInit() {
@@ -52,8 +53,8 @@ export class RouteComponent implements OnInit, OnDestroy {
     this.setHighlightsInMap(route);
   }
 
-  routeBackToJourney() {
-    this.router.navigate(['tabs', 'journeys', 'journey', this.route.snapshot.paramMap.get('id')])
+  async routeBackToJourney() {
+    await this.router.navigate(['tabs', 'journeys', 'journey', this.route.snapshot.paramMap.get('id')])
   }
 
   async addNewPoint() {
@@ -169,5 +170,76 @@ export class RouteComponent implements OnInit, OnDestroy {
   /** Remove map when we have multiple map object */
   ngOnDestroy() {
     this.map.remove();
+  }
+
+  tagStyle(tag: string): string {
+    return 'width: ' + tag.length*15 + 'px;';
+  }
+
+  async deleteRouteAlert() {
+    const alert = await this.alertController.create({
+      header: 'Reise löschen',
+      message: 'Möchtest du die Reise wirklich löschen?',
+      buttons: [
+        {
+          text: 'Löschen',
+          handler: async () => {
+            await this.deleteRoute();
+          }
+        },
+        'Abbrechen'
+      ]
+    });
+    await alert.present();
+  }
+
+  async deleteRoute() {
+    this.currentJourney.routes = this.currentJourney.routes.filter(r => r != this.currentRoute);
+    await this.storageService.update(this.currentJourney.key, this.currentJourney);
+    await this.routeBackToJourney();
+  }
+
+  async deleteRouteHighlightAlert(highlight: Highlight) {
+    const alert = await this.alertController.create({
+      header: 'Highlight löschen',
+      message: 'Möchtest du das Highlight wirklich löschen?',
+      buttons: [
+        {
+          text: 'Löschen',
+          handler: async () => {
+            await this.deleteRouteHighlight(highlight);
+          }
+        },
+        'Abbrechen'
+      ]
+    });
+    await alert.present();
+  }
+
+  private async deleteRouteHighlight(highlight: Highlight) {
+    this.currentRoute.highlights = this.currentRoute.highlights.filter(h => h != highlight);
+    await this.storageService.update(this.currentJourney.key, this.currentJourney);
+  }
+
+  async deleteRoutePointAlert(point: Point) {
+    const alert = await this.alertController.create({
+      header: 'Routen-Punkt löschen',
+      message: 'Möchtest du den Routenpunkt wirklich löschen?',
+      buttons: [
+        {
+          text: 'Löschen',
+          handler: async () => {
+            await this.deleteRoutePoint(point);
+          }
+        },
+        'Abbrechen'
+      ]
+    });
+    await alert.present();
+  }
+
+  private async deleteRoutePoint(point: Point) {
+    this.currentRoute.points = this.currentRoute.points.filter(p => p != point);
+    await this.storageService.update(this.currentJourney.key, this.currentJourney);
   }
 }

@@ -32,7 +32,7 @@ export class JourneysPage implements OnInit {
           this.readInJourneys();
           this.searchBarInput = '';
         }
-      })
+      });
     this.readInJourneys();
   }
 
@@ -53,5 +53,9 @@ export class JourneysPage implements OnInit {
 
   routeToNewJourney() {
     this.router.navigate(['tabs', 'journeys', 'new'])
+  }
+
+  tagStyle(tag: string): string {
+    return 'width: ' + tag.length*15 + 'px;';
   }
 }

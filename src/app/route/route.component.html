@@ -6,6 +6,9 @@
     <ion-title>
       {{currentRoute.headline}}
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="deleteRouteAlert()"><ion-icon name="trash"></ion-icon></ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -23,7 +26,10 @@
     </ion-item>
     <ion-item *ngFor="let highlight of currentRoute.highlights">
       <ion-card>
-        <ion-img *ngIf="highlight.pictures.length > 0" [src]="highlight.pictures[0].path"></ion-img>
+        <ion-img *ngIf="highlight.pictures.length > 0"
+                 [src]="highlight.pictures[0].path"
+                 style="width: 14rem; height: 10rem"
+        ></ion-img>
         <ion-card-header>
           <ion-card-title>{{highlight.headline}}</ion-card-title>
         </ion-card-header>
@@ -32,6 +38,14 @@
           <ion-label>Breitengrad: {{highlight.latitude}}</ion-label>
           <ion-label>Längengrad: {{highlight.longitude}}</ion-label>
           <ion-label>Zeitpunkt: {{convertToReadableDate(highlight.timestamp)}}</ion-label>
+          <ion-row>
+            <ion-item *ngFor="let tag of highlight.tags">
+              <p [style]="tagStyle(tag)" class="shownTag">{{tag}}</p>
+            </ion-item>
+          </ion-row>
+          <ion-buttons slot="end">
+            <ion-button (click)="deleteRouteHighlightAlert(highlight)"><ion-icon name="trash"></ion-icon></ion-button>
+          </ion-buttons>
         </ion-card-content>
       </ion-card>
     </ion-item>
@@ -47,6 +61,9 @@
           <ion-label>Breitengrad: {{point.latitude}}</ion-label>
           <ion-label>Längengrad: {{point.longitude}}</ion-label>
           <ion-label>Zeitpunkt: {{convertToReadableDate(point.timestamp)}}</ion-label>
+          <ion-buttons slot="end">
+            <ion-button (click)="deleteRoutePointAlert(point)"><ion-icon name="trash"></ion-icon></ion-button>
+          </ion-buttons>
         </ion-card-content>
       </ion-card>
     </ion-item>

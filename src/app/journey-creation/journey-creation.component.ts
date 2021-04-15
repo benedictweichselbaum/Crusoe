@@ -6,6 +6,7 @@ import {Highlight} from "../model/highlight.model";
 import {JourneyStorageService} from "../service/services/journey.storage.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AlertController} from "@ionic/angular";
+import {CrusoeCameraService} from "../service/services/crusoe-camera.service";
 
 @Component({
   selector: 'app-journey-creation',
@@ -17,12 +18,14 @@ export class JourneyCreationComponent implements OnInit {
   @ViewChild('creationForm') creationFormChild;
   public creationForm: FormGroup;
   public tags: Array<string>;
+  public picture: string;
 
   constructor(
     private router: Router,
     private storageService: JourneyStorageService,
     private formBuilder: FormBuilder,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private cameraService: CrusoeCameraService
   ) {
     this.creationForm = this.formBuilder.group({
       journeyName: ['', Validators.required],
@@ -34,10 +37,11 @@ export class JourneyCreationComponent implements OnInit {
 
   ngOnInit() {
     this.tags = [];
+    this.picture = '';
   }
 
-  routeBackToJourneyOverview() {
-    this.router.navigate(['tabs', 'journeys'])
+  async routeBackToJourneyOverview() {
+    await this.router.navigate(['tabs', 'journeys'])
   }
 
   async saveNewJourney() {
@@ -52,11 +56,12 @@ export class JourneyCreationComponent implements OnInit {
     }));
 
     if (journeyAlreadyExists) {
-      this.showAlertWhenInvalid();
+      await this.showAlertWhenInvalid();
     } else {
-      const newJourney: Journey = await this.createNewEmptyJourney(journeyName, journeySubtitle, journeyDescription, this.tags);
+      const newJourney: Journey = await this.createNewEmptyJourney(journeyName, journeySubtitle, journeyDescription, this.tags, this.picture);
       this.storageService.create(newJourney.key, newJourney).then(result => {
         this.tags = [];
+        this.picture = '';
         this.routeBackToJourneyOverview();
       });
     }
@@ -72,7 +77,15 @@ export class JourneyCreationComponent implements OnInit {
     this.tags = this.tags.filter(tag => tag !== tagToDelete);
   }
 
-  private async createNewEmptyJourney(name: string, subtitle: string, description: string, tags: Array<string>): Promise<Journey> {
+  deletePicture() {
+    this.picture = '';
+  }
+
+  async addPicture() {
+    this.picture = await this.cameraService.takePicture();
+  }
+
+  private async createNewEmptyJourney(name: string, subtitle: string, description: string, tags: Array<string>, pic: string): Promise<Journey> {
     return new Journey(await this.storageService.nextKey(),
       new Array<CrusoeRoute>(),
       name,
@@ -83,7 +96,7 @@ export class JourneyCreationComponent implements OnInit {
       Date.now(),
       null,
       new Array<Highlight>(),
-      null);
+      pic);
   }
 
   private async showAlertWhenInvalid() {
