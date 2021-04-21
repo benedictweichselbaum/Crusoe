@@ -20,11 +20,23 @@
     <ion-list>
       <ion-item *ngFor="let journey of shownJourneys" button (click)="routeToJourney(journey.key)">
         <ion-card>
+          <ion-img *ngIf="journey.previewPicture !== ''"
+                   [src]="journey.previewPicture"
+                   style="width: 15rem; height: 10rem"
+          >
+          </ion-img>
           <ion-card-header>
             <ion-card-subtitle>{{journey.subtitle}}</ion-card-subtitle>
             <ion-card-title>{{journey.name}}</ion-card-title>
           </ion-card-header>
-          <ion-card-content>{{journey.description}}</ion-card-content>
+          <ion-card-content>
+            {{journey.description}}
+            <ion-row>
+              <ion-item *ngFor="let tag of journey.tags">
+                <p [style]="tagStyle(tag)" class="shownTag">{{tag}}</p>
+              </ion-item>
+            </ion-row>
+          </ion-card-content>
         </ion-card>
       </ion-item>
     </ion-list>

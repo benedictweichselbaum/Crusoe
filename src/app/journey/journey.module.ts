@@ -6,9 +6,9 @@ import { ExploreContainerComponentModule } from '../explore-container/explore-co
 import {JourneyComponentRoutingModule} from "./journey-routing.module";
 import {JourneyComponent} from "./journey.component";
 import {CrusoeServicesModule} from "../service/services/crusoe-services.module";
-import {RouteComponent} from "../route/route.component";
 import {RouteModalComponent} from "./route-modal/route-modal.component";
-import {Geolocation} from "@capacitor/core";
+import {Geolocation} from "@ionic-native/geolocation/ngx";
+import {JourneyHighlightModalComponent} from "./journey-highlight-modal/journey-highlight-modal.component";
 
 
 @NgModule({
@@ -21,6 +21,7 @@ import {Geolocation} from "@capacitor/core";
     CrusoeServicesModule,
     ReactiveFormsModule
   ],
-  declarations: [JourneyComponent, RouteModalComponent]
+  declarations: [JourneyComponent, RouteModalComponent, JourneyHighlightModalComponent],
+  providers: [Geolocation]
 })
 export class JourneyComponentModule {}

@@ -49,6 +49,23 @@
       </ion-button>
     </ion-item>
   </form>
+  <ion-item>
+    <ion-label>Bilder</ion-label>
+  </ion-item>
+  <ion-item *ngIf="picture == ''">
+    <ion-label><em>Füge ein Vorschaubild für deine Reise ein</em></ion-label>
+  </ion-item>
+  <ion-item *ngIf="picture != ''">
+    <ion-row>
+      <ion-item (click)="deletePicture()">
+        <ion-img style="width: 15rem; height:10rem" [src]="picture">
+        </ion-img>
+      </ion-item>
+    </ion-row>
+  </ion-item>
+  <ion-button [disabled]="picture != ''" expand="full" color="secondary" (click)="addPicture()">
+    Bild hinzufügen
+  </ion-button>
   <ion-row style="height: 110px"></ion-row>
 </ion-content>
 

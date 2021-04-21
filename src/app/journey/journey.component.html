@@ -6,6 +6,9 @@
     <ion-title>
       {{certainJourney.name}}
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="deleteJourneyAlert()"><ion-icon name="trash"></ion-icon></ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -27,7 +30,47 @@
         <ion-card-header>
           <ion-card-title>{{route.headline}}</ion-card-title>
         </ion-card-header>
-        <ion-card-content>{{route.description}}</ion-card-content>
+        <ion-card-content>
+          {{route.description}}
+          <ion-row>
+            <ion-item *ngFor="let tag of route.tags">
+              <p [style]="tagStyle(tag)" class="shownTag">{{tag}}</p>
+            </ion-item>
+          </ion-row>
+        </ion-card-content>
+      </ion-card>
+    </ion-item>
+  </ion-list>
+  <ion-item>
+    <ion-list-header style="font-size: larger">Reise-Highlights</ion-list-header>
+  </ion-item>
+  <ion-item *ngIf="certainJourney.highlights.length == 0">
+    <ion-label><em>Du scheinst noch keine Reise-Highlights angelegt zu haben</em></ion-label>
+  </ion-item>
+  <ion-list>
+    <ion-item *ngFor="let highlight of certainJourney.highlights">
+      <ion-card>
+        <ion-img *ngIf="highlight.pictures.length > 0"
+                 [src]="highlight.pictures[0].path"
+                 style="width: 14rem; height: 10rem"
+        ></ion-img>
+        <ion-card-header>
+          <ion-card-title>{{highlight.headline}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-text>{{highlight.description}}</ion-text>
+          <ion-label>Breitengrad: {{highlight.latitude}}</ion-label>
+          <ion-label>Längengrad: {{highlight.longitude}}</ion-label>
+          <ion-label>Zeitpunkt: {{convertToReadableDate(highlight.timestamp)}}</ion-label>
+          <ion-row>
+            <ion-item *ngFor="let tag of highlight.tags">
+              <p [style]="tagStyle(tag)" class="shownTag">{{tag}}</p>
+            </ion-item>
+          </ion-row>
+          <ion-buttons slot="end">
+            <ion-button (click)="deleteJourneyHighlightAlert(highlight)"><ion-icon name="trash"></ion-icon></ion-button>
+          </ion-buttons>
+        </ion-card-content>
       </ion-card>
     </ion-item>
   </ion-list>
