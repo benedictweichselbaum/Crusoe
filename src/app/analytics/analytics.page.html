@@ -3,6 +3,11 @@
     <ion-title>
       Statistik
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="saveJourneyMock()">
+        Lade Demo-Reise
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -12,8 +17,85 @@
       <ion-title size="large">Statistik</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-button (click)="saveJourneyMock()">
-    Lade Demo-Reise
-  </ion-button>
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+
+  <ion-item button (click)="showJourneyPicker()">
+    <ion-label><b>Aktuelle Reise:</b></ion-label>
+    <ion-label>{{journey === null ? 'Alle Reisen' : journey.name}}</ion-label>
+  </ion-item>
+  <ion-grid>
+    <ion-row *ngIf="journey === null">
+      <ion-col>
+        <ion-card>
+          <ion-card-header>
+            <ion-icon name="globe" size="large"></ion-icon>
+          </ion-card-header>
+          <ion-card-content>
+            Anzahl der Reisen:<br>
+            {{journeys.length}}
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-card>
+          <ion-card-header>
+            <ion-icon name="resize" size="large"></ion-icon>
+          </ion-card-header>
+          <ion-card-content>
+            Zurückgelegte Distanz:<br>
+            {{distance}} km
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-card>
+          <ion-card-header>
+            <ion-icon name="image" size="large"></ion-icon>
+          </ion-card-header>
+          <ion-card-content>
+            Zurückgelegte Höhe:<br>
+            {{altitude}}
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col>
+        <ion-card>
+          <ion-card-header>
+            <ion-icon name="star" size="large"></ion-icon>
+          </ion-card-header>
+          <ion-card-content>
+            Anzahl der Highlights:<br>
+            {{numberOfHighlights}}
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-card>
+          <ion-card-header>
+            <ion-icon name="walk" size="large"></ion-icon>
+          </ion-card-header>
+          <ion-card-content>
+            Anzahl der Routen:<br>
+            {{numberOfRoutes}}
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col>
+        <ion-card>
+          <ion-card-header>
+            <ion-icon name="locate" size="large"></ion-icon>
+          </ion-card-header>
+          <ion-card-content>
+            Anzahl der Punkte:<br>
+            {{numberOfPoints}}
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

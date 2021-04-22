@@ -1,21 +1,128 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {JourneyStorageService} from '../service/services/journey.storage.service';
 import {Journey} from '../model/journey.model';
+import {PickerController} from "@ionic/angular";
 
 @Component({
   selector: 'app-tab3',
   templateUrl: 'analytics.page.html',
   styleUrls: ['analytics.page.scss']
 })
-export class AnalyticsPage {
+export class AnalyticsPage implements OnInit {
 
-  constructor(private storageService: JourneyStorageService) {}
+  public journeys: Array<Journey> = [];
+  public journey: Journey = null;
+  public journeyOptions: Array<string> = ['Alle Reisen'];
+
+  public distance: string = '0';
+  public altitude: number = 0;
+  public numberOfHighlights: number = 0;
+  public numberOfRoutes: number = 0;
+  public numberOfPoints: number = 0;
+
+  constructor(
+    private storageService: JourneyStorageService,
+    private pickerController: PickerController
+  ) {}
+
+  async ngOnInit() {
+    await this.reloadJourneys();
+  }
+
+  async reloadJourneys() {
+    this.journeys = await this.storageService.read();
+    this.journeyOptions = ['Alle Reisen'];
+    this.journeys.forEach(journey => this.journeyOptions.push(journey.name));
+    this.createAnalyticsForAllJourneys();
+  }
+
+  async showJourneyPicker() {
+    await this.reloadJourneys();
+    const options = {
+      buttons: [
+        {
+          text: "Abbrechen",
+          role: 'cancel',
+        },
+        {
+          text:'Ok',
+          handler:(value:any) => {
+            this.createAnalytics(this.loadSingleJourneyForAnalytics(value));
+          }
+        }
+      ],
+      columns:[{
+        name:'Reisen',
+        options: this.getPickerOptions()
+      }]
+    };
+
+    const picker = await this.pickerController.create(options);
+    await picker.present();
+  }
+
+  public loadSingleJourneyForAnalytics(pickedValue: any): boolean {
+    const pickedJourney = this.journeys.filter(j => j.name === pickedValue.Reisen.text);
+    if (pickedJourney.length === 0) {
+      this.journey = null;
+      return true;
+    }
+    this.journey = pickedJourney[0];
+    return false;
+  }
+
+  public createAnalytics(allJourneys: boolean) {
+    if (allJourneys) {
+      this.createAnalyticsForAllJourneys();
+    } else {
+      let dist = 0;
+      this.journey.routes.forEach(route => {
+        for (let i = 1; i < route.points.length; i++) {
+          const point1 = route.points[i];
+          const point2 = route.points[i-1]
+          dist += this.distanceBetweenTwoPoints(point1.longitude, point1.latitude, point2.longitude, point2.latitude);
+        }
+      });
+      this.distance = (dist / 1000).toFixed(2);
+      this.numberOfHighlights = this.journey.highlights.length;
+      this.numberOfRoutes = this.journey.routes.length;
+      let numPoints = 0;
+      this.journey.routes.forEach(route => numPoints += route.points.length);
+      this.numberOfPoints = numPoints;
+    }
+  }
+
+  private createAnalyticsForAllJourneys() {
+    console.log('Alle Reisen');
+  }
+
+  getPickerOptions() {
+    const options = [];
+    this.journeyOptions.forEach(option => options.push({text: option, value: option}));
+    return options;
+  }
 
   async saveJourneyMock(){
     const key = await this.storageService.nextKey();
     this.journeyMock.key = key;
     this.storageService.create(key, this.journeyMock).then(result => {
     });
+  }
+
+  private distanceBetweenTwoPoints(lon1: number, lat1: number, lon2: number, lat2: number): number {
+    const R = 6371e3;
+    const phi1 = lat1 * Math.PI/180;
+    const phi2 = lat2 * Math.PI/180;
+    const phi3 = (lat2-lat1) * Math.PI/180;
+    const deltaLambda = (lon2-lon1) * Math.PI/180;
+
+    const a = Math.sin(phi3/2) * Math.sin(phi3/2) +
+      Math.cos(phi1) * Math.cos(phi2) *
+      Math.sin(deltaLambda/2) * Math.sin(deltaLambda/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    const d = R * c;
+    return d;
   }
 
   journeyMock: Journey = {
