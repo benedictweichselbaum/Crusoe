@@ -178,8 +178,8 @@ export class RouteComponent implements OnInit, OnDestroy {
 
   async deleteRouteAlert() {
     const alert = await this.alertController.create({
-      header: 'Reise löschen',
-      message: 'Möchtest du die Reise wirklich löschen?',
+      header: 'Route löschen',
+      message: 'Möchtest du die Route wirklich löschen?',
       buttons: [
         {
           text: 'Löschen',

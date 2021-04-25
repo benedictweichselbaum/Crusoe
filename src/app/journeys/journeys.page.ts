@@ -37,7 +37,12 @@ export class JourneysPage implements OnInit {
   }
 
   public searchJourneys(event: any) {
-    this.shownJourneys = this.journeys.filter(journey => journey.name.toLowerCase().startsWith(event.target.value.toLowerCase()));
+    this.shownJourneys = this.journeys.filter(journey => {
+      let isPartOfSearch: boolean = false;
+      isPartOfSearch ||= journey.name.toLowerCase().startsWith(event.target.value.toLowerCase());
+      isPartOfSearch ||= journey.tags.filter(tag => tag.toLowerCase().startsWith(event.target.value.toLowerCase())).length > 0;
+      return isPartOfSearch;
+    });
   }
 
   readInJourneys() {

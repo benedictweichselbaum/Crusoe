@@ -74,7 +74,7 @@ export class JourneyComponent implements OnInit {
   }
 
   tagStyle(tag: string): string {
-    return 'width: ' + tag.length*15 + 'px;';
+    return 'width: ' + tag.length * 15 + 'px;';
   }
 
   async deleteJourneyAlert() {
