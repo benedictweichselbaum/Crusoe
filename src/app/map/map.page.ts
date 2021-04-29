@@ -1,9 +1,8 @@
 import {JourneyStorageService} from '../service/services/journey.storage.service';
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import * as Leaflet from 'leaflet';
 import {ColoredIcons} from './colored-icons';
 import {Journey} from '../model/journey.model';
-import {Highlight} from '../model/highlight.model';
 
 @Component({
   selector: 'app-tab2',
@@ -13,9 +12,9 @@ import {Highlight} from '../model/highlight.model';
 /***
  * https://edupala.com/how-to-add-leaflet-map-in-ionic/
  ***/
-export class MapPage implements OnInit, OnDestroy {
+export class MapPage implements OnInit {
 
-  journeys: Journey[];
+  journeys: Journey[] = [];
   map: Leaflet.Map;
   pictureKey = 0;
 
@@ -23,30 +22,32 @@ export class MapPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // Um mit dem Storage zu testen: read in Journeys
+
   }
 
   ionViewDidEnter() {
     this.storageService.read().then(result => {
       this.journeys = result;
-      console.log(this.journeys);
-
-      if (this.journeys.length > 0){
-        const lat = this.journeys[0].routes[0].points[0].latitude;
-        const long = this.journeys[0].routes[0].points[0].longitude;
-        const zoomlevel = 10;
-        this.map = Leaflet.map('mapId').setView([lat, long], zoomlevel);
-      }
-      else {
-        this.map = Leaflet.map('mapId').setView([48000, 9000], 5);
-      }
-      Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© <a href=https://www.openstreetmap.org/copyright>OpenStreetMap</a>'
-      }).addTo(this.map);
+      this.leafletMap();
       this.setNodesAndEdgesJourney();
     }).catch((error) => {
       console.log(error);
     });
+  }
+
+  leafletMap() {
+    let lat = 48.442078;
+    let long = 8.684851;
+    const zoomlevel = 5;
+    if (this.journeys[0].routes[0].points[0]) {
+      lat = this.journeys[0].routes[0].points[0].latitude;
+      long = this.journeys[0].routes[0].points[0].longitude;
+    }
+    this.map = new Leaflet.Map('mapId').setView([lat, long], zoomlevel);
+    const layer = new Leaflet.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href=https://www.openstreetmap.org/copyright>OpenStreetMap</a>'
+    });
+    this.map.addLayer(layer);
   }
 
   setNodesAndEdgesJourney() {
@@ -108,23 +109,11 @@ export class MapPage implements OnInit, OnDestroy {
           '<span>Höhe: </span>' + highlight.height
         )
         .openPopup();
-      /*if (highlight.pictures.length > 0) {
-      //listener funktioniert noch nicht
-        document.getElementById('imageView').addEventListener('swipe')
-      }*/
     });
   }
 
-  swipeEvent(event, highlight: Highlight) {
-    if (event.direction === 2 && this.pictureKey < highlight.pictures.length) {
-      this.pictureKey++;
-      const myImg = document.getElementById('imageView') as HTMLImageElement;
-      myImg.src = highlight.pictures[this.pictureKey].path;
-    }
-  }
-
   /** Remove map when we have multiple map object */
-  ngOnDestroy() {
+  ionViewWillLeave(){
     this.map.remove();
   }
 }
