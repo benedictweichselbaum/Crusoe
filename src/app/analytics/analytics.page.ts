@@ -72,28 +72,67 @@ export class AnalyticsPage implements OnInit {
   }
 
   public createAnalytics(allJourneys: boolean) {
+    this.resetAnalytics();
     if (allJourneys) {
       this.createAnalyticsForAllJourneys();
     } else {
-      let dist = 0;
-      this.journey.routes.forEach(route => {
-        for (let i = 1; i < route.points.length; i++) {
-          const point1 = route.points[i];
-          const point2 = route.points[i-1]
-          dist += this.distanceBetweenTwoPoints(point1.longitude, point1.latitude, point2.longitude, point2.latitude);
-        }
-      });
-      this.distance = (dist / 1000).toFixed(2);
+      this.distance = this.convertDistanceToKm(this.getDistanceForJourney(this.journey));
       this.numberOfHighlights = this.journey.highlights.length;
       this.numberOfRoutes = this.journey.routes.length;
       let numPoints = 0;
       this.journey.routes.forEach(route => numPoints += route.points.length);
       this.numberOfPoints = numPoints;
+      this.altitude = this.calculateAltitudeForJourney(this.journey);
     }
   }
 
+  private calculateAltitudeForJourney(journey: Journey): number {
+    let altitudeDifference = 0;
+    journey.routes.forEach(route => {
+      for (let i = 1; i < route.points.length; i++) {
+        console.log(route.points[i].height + '' +  route.points[i - 1].height);
+        altitudeDifference += Math.abs(route.points[i].height - route.points[i - 1].height);
+      }
+    });
+    console.log(altitudeDifference)
+    return altitudeDifference;
+  }
+
+  private getDistanceForJourney(journey: Journey) {
+    let dist = 0;
+    journey.routes.forEach(route => {
+      for (let i = 1; i < route.points.length; i++) {
+        const point1 = route.points[i];
+        const point2 = route.points[i-1]
+        dist += this.distanceBetweenTwoPoints(point1.longitude, point1.latitude, point2.longitude, point2.latitude);
+      }
+    });
+    return dist;
+  }
+
+  private convertDistanceToKm(dist: number) {
+    return (dist / 1000).toFixed(2);
+  }
+
   private createAnalyticsForAllJourneys() {
-    console.log('Alle Reisen');
+    let completeDistance = 0;
+    this.journeys.forEach(journey => {
+      completeDistance += this.getDistanceForJourney(journey);
+      this.numberOfHighlights += journey.highlights.length;
+      this.numberOfRoutes += journey.routes.length;
+      journey.routes.map(route => this.numberOfPoints += route.points.length);
+      this.altitude += this.calculateAltitudeForJourney(journey);
+    });
+    this.distance = this.convertDistanceToKm(completeDistance);
+
+  }
+
+  private resetAnalytics() {
+    this.numberOfHighlights = 0;
+    this.numberOfPoints = 0;
+    this.numberOfRoutes = 0;
+    this.altitude = 0;
+    this.distance = '0';
   }
 
   getPickerOptions() {
@@ -102,7 +141,7 @@ export class AnalyticsPage implements OnInit {
     return options;
   }
 
-  async saveJourneyMock(){
+  async saveJourneyMock() {
     const key = await this.storageService.nextKey();
     this.journeyMock.key = key;
     this.storageService.create(key, this.journeyMock).then(result => {
@@ -121,8 +160,7 @@ export class AnalyticsPage implements OnInit {
       Math.sin(deltaLambda/2) * Math.sin(deltaLambda/2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-    const d = R * c;
-    return d;
+    return R * c;
   }
 
   journeyMock: Journey = {
