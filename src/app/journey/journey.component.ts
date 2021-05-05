@@ -22,7 +22,8 @@ export class JourneyComponent implements OnInit {
   public certainJourney: Journey = new Journey('-1', new Array<CrusoeRoute>(), 'N/A', '', new Array<string>(), '', true, null, null, new Array<Highlight>(), '')
   map: Leaflet.Map;
   markers: Leaflet.marker[][] = [];
-  highlights: Leaflet.marker[][] = [];
+  routeHighlights: Leaflet.marker[][] = [];
+  journeyHighlights: Leaflet.marker[] = [];
   edges: Leaflet.polyline[] = [];
   pictureKey = 0;
 
@@ -81,7 +82,8 @@ export class JourneyComponent implements OnInit {
       }
     });
     modal.onDidDismiss().then(() => {
-      this.addNewHighlightToMap(this.certainJourney.highlights[this.certainJourney.highlights.length - 1], 0, 7);
+      this.addNewHighlightToMap(this.certainJourney.highlights[this.certainJourney.highlights.length - 1],
+        -1, 7);
     });
     return await modal.present();
   }
@@ -134,9 +136,9 @@ export class JourneyComponent implements OnInit {
   }
 
   private async deleteJourneyHighlight(highlight: Highlight) {
-    this.removeHighlightFromMap(highlight, 0);
     this.certainJourney.highlights = this.certainJourney.highlights.filter(h => h != highlight);
     await this.storageService.update(this.certainJourney.key, this.certainJourney);
+    this.removeJourneyHighlightFromMap(highlight);
   }
 
   /***
@@ -167,17 +169,14 @@ export class JourneyComponent implements OnInit {
   }
 
   addJourneyHighlightsToMap(journey){
-    this.highlights.splice(0, 0, []);
     journey.highlights.forEach((highlight) => {
-      console.log("highlight", highlight);
-      this.addNewHighlightToMap(highlight, 0, 7);
+      this.addNewHighlightToMap(highlight, -1, 7);
     });
-    console.log(this.highlights);
   }
 
   addRouteToMap(route, routeIndex){
     this.markers.splice(routeIndex, 0, []);
-    this.highlights.splice(routeIndex, 0, []);
+    this.routeHighlights.splice(routeIndex, 0, []);
     const sortedPoints = route.points.sort((a, b) => (a.timestamp < b.timestamp) ? -1 : 1);
     sortedPoints.forEach((point) => {
       this.addNewNodeToMap(point, routeIndex);
@@ -222,7 +221,8 @@ export class JourneyComponent implements OnInit {
     if (highlight.pictures.length > 0) {
       image = '<img id="imageView" src="' + highlight.pictures[this.pictureKey].path + '" alt="Bilder des Nutzers zum Highlight" (swipe)="swipeEvent($event, highlight)" width="100%"/>';
     }
-    const actualMarker = new Leaflet.Marker([highlight.latitude, highlight.longitude],
+    const latlng = Leaflet.latLng(highlight.latitude, highlight.longitude);
+    const actualMarker = new Leaflet.Marker(latlng,
       {icon: ColoredIcons.getColoredIconByIndex(colorIndex)}
     );
     actualMarker.bindPopup(
@@ -231,43 +231,38 @@ export class JourneyComponent implements OnInit {
       highlight.description + '<br> <br>' +
       '<span>Tags: </span>' + highlight.tags.toString() + '<br>' +
       '<span>Zeitpunkt: </span>' + new Date(highlight.timestamp).toLocaleTimeString('de-DE') + '<br>' +
-      '<span>Breitengrad: </span>' + highlight.latitude.toString() + '<br>' +
-      '<span>Höhengrad: </span>' + highlight.longitude.toString() + '<br>' +
+      '<span>Breitengrad: </span>' + highlight.latitude + '<br>' +
+      '<span>Höhengrad: </span>' + highlight.longitude + '<br>' +
       '<span>Höhe: </span>' + highlight.height
     );
     this.map.addLayer(actualMarker);
-    this.highlights[routeIndex].push(actualMarker);
+    if (routeIndex === -1){
+      this.journeyHighlights.push(actualMarker);
+      console.log(this.journeyHighlights);
+    }
+    else {
+      this.routeHighlights[routeIndex].push(actualMarker);
+    }
   }
 
-  removeHighlightFromMap(highlight: Highlight, routeIndex){
-    console.log(this.highlights[routeIndex]);
-    console.log("lat", highlight.latitude);
-    console.log("long", highlight.longitude);
-    let highlightId = -1;
-    for (let i = 0; i < this.highlights[routeIndex].length; i++){
-      console.log("runde: ", i, this.highlights[routeIndex]);
-      const p = this.highlights[routeIndex][i];
-      const longBoolean = p.getLatLng().lng === highlight.longitude;
-      console.log("latBoolean ", longBoolean);
-      const latBoolean = p.getLatLng().lat === highlight.latitude;
-      console.log("latBoolean ", latBoolean);
-      if (longBoolean
-        && latBoolean){
-        console.log("inside");
-        highlightId = i;
-        break;
-      }
-    }
-    console.log(highlightId);
+  removeJourneyHighlightFromMap(highlight: Highlight){
+    const highlightId = this.journeyHighlights.indexOf(this.journeyHighlights.find(p =>
+      p.getLatLng().lng === highlight.longitude
+      && p.getLatLng().lat === highlight.latitude));
+    console.log('highlightId: ', highlightId);
+    // highlightId is -1 if highlight is not found
     if (highlightId || highlightId === 0){
-      this.map.removeLayer(this.highlights[routeIndex][highlightId]);
-      this.highlights[routeIndex].splice(highlightId, 1);
-      console.log(this.highlights);
+      this.map.removeLayer(this.journeyHighlights[highlightId]);
+      this.journeyHighlights.splice(highlightId, 1);
+    }
+    else {
+      console.log('Could not find a matching journey highlight marker');
     }
   }
 
   removeNodeFromMap(point: Point, routeIndex){
-    const markerId = this.markers[routeIndex].indexOf(this.markers[routeIndex].find(p => p.getLatLng().lng === point.longitude
+    const markerId = this.markers[routeIndex].indexOf(this.markers[routeIndex].find(p =>
+      p.getLatLng().lng === point.longitude
       && p.getLatLng().lat === point.latitude));
     if (markerId || markerId === 0){
       this.map.removeLayer(this.markers[routeIndex][markerId]);
