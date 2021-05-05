@@ -1,6 +1,8 @@
 # Crusoe - Ein mobiles Reisetagebuch
 Crusoe ermöglicht es dem Anwender alle seine Reisen digital in einem Reisetagebuch auf seinem Smartphone zu sichern. Persönliche Eindrücke und Erlebnisse kann er mit der App mit Bildern und textuellen Beschreibungen detailliert festhalten. Dabei kann der Reisende während der Reise seinen Standort stets per GPS erfassen. Seine gewählten Routen kann er hierdurch im Nachhinein in Karten ansehen und sich seine großartige Reise in Erinnerung rufen.
 
+![image alt](https://github.com/benedictweichselbaum/Crusoe/blob/master/CrusoeStartpage.PNG)
+
 ## Funktionalitäten der App im Überblick
 - Sichern von Reisen
   - Erfassung mehrerer Routen
