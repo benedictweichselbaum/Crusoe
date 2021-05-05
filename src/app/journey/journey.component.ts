@@ -238,7 +238,6 @@ export class JourneyComponent implements OnInit {
     this.map.addLayer(actualMarker);
     if (routeIndex === -1){
       this.journeyHighlights.push(actualMarker);
-      console.log(this.journeyHighlights);
     }
     else {
       this.routeHighlights[routeIndex].push(actualMarker);
@@ -249,7 +248,6 @@ export class JourneyComponent implements OnInit {
     const highlightId = this.journeyHighlights.indexOf(this.journeyHighlights.find(p =>
       p.getLatLng().lng === highlight.longitude
       && p.getLatLng().lat === highlight.latitude));
-    console.log('highlightId: ', highlightId);
     // highlightId is -1 if highlight is not found
     if (highlightId || highlightId === 0){
       this.map.removeLayer(this.journeyHighlights[highlightId]);
