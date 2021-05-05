@@ -50,7 +50,7 @@ export class JourneyComponent implements OnInit {
 
   ionViewDidEnter() {
     const journey = this.certainJourney;
-    this.leafletMap(journey.routes[0].points);
+    this.leafletMap(journey.routes);
     this.setNodesAndEdgesAndHighlights(journey);
   }
 
@@ -145,14 +145,16 @@ export class JourneyComponent implements OnInit {
    * section with map code
    ***/
 
-  leafletMap(points: Point[]) {
+  leafletMap(routes: CrusoeRoute[]) {
     let lat = 48.442078;
     let long = 8.684851;
     let zoomlevel = 3;
-    if (points[0]) {
-      lat = points[0].latitude;
-      long = points[0].longitude;
-      zoomlevel = 13;
+    if (routes[0]){
+      if (routes[0].points[0]) {
+        lat = routes[0].points[0].latitude;
+        long = routes[0].points[0].longitude;
+        zoomlevel = 13;
+      }
     }
     this.map = new Leaflet.Map('journeyMap').setView([lat, long], zoomlevel);
     const layer = new Leaflet.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

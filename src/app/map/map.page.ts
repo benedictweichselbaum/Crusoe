@@ -38,10 +38,15 @@ export class MapPage implements OnInit {
   leafletMap() {
     let lat = 48.442078;
     let long = 8.684851;
-    const zoomlevel = 5;
-    if (this.journeys[0].routes[0].points[0]) {
-      lat = this.journeys[0].routes[0].points[0].latitude;
-      long = this.journeys[0].routes[0].points[0].longitude;
+    let zoomlevel = 5;
+    if (this.journeys[0]) {
+      if (this.journeys[0].routes[0]) {
+        if (this.journeys[0].routes[0].points[0]) {
+          lat = this.journeys[0].routes[0].points[0].latitude;
+          long = this.journeys[0].routes[0].points[0].longitude;
+          zoomlevel = 13;
+        }
+      }
     }
     this.map = new Leaflet.Map('mapId').setView([lat, long], zoomlevel);
     const layer = new Leaflet.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
