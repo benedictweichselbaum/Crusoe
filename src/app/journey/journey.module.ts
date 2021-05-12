@@ -9,6 +9,8 @@ import {CrusoeServicesModule} from "../service/services/crusoe-services.module";
 import {RouteModalComponent} from "./route-modal/route-modal.component";
 import {Geolocation} from "@ionic-native/geolocation/ngx";
 import {JourneyHighlightModalComponent} from "./journey-highlight-modal/journey-highlight-modal.component";
+import {SocialSharing} from "@ionic-native/social-sharing/ngx";
+import { File } from '@ionic-native/file/ngx';
 
 
 @NgModule({
@@ -22,6 +24,6 @@ import {JourneyHighlightModalComponent} from "./journey-highlight-modal/journey-
     ReactiveFormsModule
   ],
   declarations: [JourneyComponent, RouteModalComponent, JourneyHighlightModalComponent],
-  providers: [Geolocation]
+  providers: [Geolocation, SocialSharing, File]
 })
 export class JourneyComponentModule {}

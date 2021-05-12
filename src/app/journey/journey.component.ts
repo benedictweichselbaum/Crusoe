@@ -11,6 +11,10 @@ import {filter} from "rxjs/operators";
 import {Point} from '../model/point.model';
 import {ColoredIcons} from '../map/colored-icons';
 import * as Leaflet from 'leaflet';
+import {JourneyDtoModel} from "../model/journey.dto.model";
+import {CrusoeRouteDtoModel} from "../model/crusoe.route.dto.model";
+import {SocialSharing} from "@ionic-native/social-sharing/ngx";
+import { File } from '@ionic-native/file/ngx';
 
 @Component({
   selector: 'app-journey',
@@ -32,7 +36,9 @@ export class JourneyComponent implements OnInit {
     private router: Router,
     private storageService: JourneyStorageService,
     public modalController: ModalController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private socialSharing: SocialSharing,
+    private file: File
   ) { }
 
   ngOnInit() {
@@ -281,5 +287,44 @@ export class JourneyComponent implements OnInit {
   /** Remove map when we have multiple map object */
   ionViewWillLeave(){
     this.map.remove();
+  }
+
+  /** Section with share code */
+  private createJson() {
+    const journey = this.certainJourney;
+    const routesDTO = [];
+    journey.routes.forEach((route) => {
+      routesDTO.push(
+        new CrusoeRouteDtoModel(route.points, route.highlights, route.headline, route.description, route.tags, route.previewPicture, route.departureTimestamp, route.arrivalTimestamp)
+      );
+    });
+    const journeyDTO = new JourneyDtoModel(routesDTO, journey.name, journey.subtitle, journey.tags, journey.description, journey.ownJourney, journey.departureTimestamp, journey.arrivalTimestamp, journey.highlights, journey.previewPicture);
+    const dataDirectory = this.file.dataDirectory;
+    const fileName = 'MyCrusoeJourney.json';
+    this.file.createFile(dataDirectory, fileName, true);
+    const blob = new Blob([JSON.stringify(journeyDTO, null, 4)], {type: 'application/json'});
+    this.file.writeFile(dataDirectory, fileName, blob, {replace: true, append: false});
+    return dataDirectory + fileName;
+  }
+
+  shareJourney(){
+    const journey = this.certainJourney;
+    const routesDTO = [];
+    journey.routes.forEach((route) => {
+      routesDTO.push(
+        new CrusoeRouteDtoModel(route.points, route.highlights, route.headline, route.description, route.tags, route.previewPicture, route.departureTimestamp, route.arrivalTimestamp)
+      );
+    });
+    const journeyDTO = new JourneyDtoModel(routesDTO, journey.name, journey.subtitle, journey.tags, journey.description, journey.ownJourney, journey.departureTimestamp, journey.arrivalTimestamp, journey.highlights, journey.previewPicture);
+    const dataDirectory = this.file.dataDirectory;
+    const fileName = 'MyCrusoeJourney.json';
+    const path = dataDirectory + fileName;
+
+    this.file.createFile(dataDirectory, fileName, true);
+    const blob = new Blob([JSON.stringify(journeyDTO, null, 4)], {type: 'application/json'});
+    this.file.writeFile(dataDirectory, fileName, blob, {replace: true, append: false});
+    this.socialSharing.share('Diese Route habe ich in Crusoe festgehalten. Teile doch auch deine Reisen mit mir!',
+      'Meine Reise aus Crusoe', path, null);
+    // this.file.removeFile(dataDirectory, fileName);
   }
 }
