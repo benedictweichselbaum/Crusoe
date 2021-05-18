@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {JourneyStorageService} from '../service/services/journey.storage.service';
 import {Journey} from '../model/journey.model';
 import {PickerController} from "@ionic/angular";
+import {filter} from "rxjs/operators";
+import {NavigationEnd, Router} from "@angular/router";
 
 @Component({
   selector: 'app-tab3',
@@ -22,10 +24,20 @@ export class AnalyticsPage implements OnInit {
 
   constructor(
     private storageService: JourneyStorageService,
-    private pickerController: PickerController
+    private pickerController: PickerController,
+    private router: Router
   ) {}
 
   async ngOnInit() {
+    this.router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd)
+      )
+      .subscribe(async (event: any) => {
+        if (event.url.startsWith('/tabs/journeys/analytics')) {
+          await this.reloadJourneys();
+        }
+      });
     await this.reloadJourneys();
   }
 
@@ -76,7 +88,7 @@ export class AnalyticsPage implements OnInit {
     if (allJourneys) {
       this.createAnalyticsForAllJourneys();
     } else {
-      this.distance = this.convertDistanceToKm(this.getDistanceForJourney(this.journey));
+      this.distance = AnalyticsPage.convertDistanceToKm(this.getDistanceForJourney(this.journey));
       this.numberOfHighlights = this.journey.highlights.length;
       this.numberOfRoutes = this.journey.routes.length;
       let numPoints = 0;
@@ -104,13 +116,13 @@ export class AnalyticsPage implements OnInit {
       for (let i = 1; i < route.points.length; i++) {
         const point1 = route.points[i];
         const point2 = route.points[i-1]
-        dist += this.distanceBetweenTwoPoints(point1.longitude, point1.latitude, point2.longitude, point2.latitude);
+        dist += AnalyticsPage.distanceBetweenTwoPoints(point1.longitude, point1.latitude, point2.longitude, point2.latitude);
       }
     });
     return dist;
   }
 
-  private convertDistanceToKm(dist: number) {
+  private static convertDistanceToKm(dist: number) {
     return (dist / 1000).toFixed(2);
   }
 
@@ -120,10 +132,10 @@ export class AnalyticsPage implements OnInit {
       completeDistance += this.getDistanceForJourney(journey);
       this.numberOfHighlights += journey.highlights.length;
       this.numberOfRoutes += journey.routes.length;
-      journey.routes.map(route => this.numberOfPoints += route.points.length);
+      journey.routes.forEach(route => this.numberOfPoints += route.points.length);
       this.altitude += this.calculateAltitudeForJourney(journey);
     });
-    this.distance = this.convertDistanceToKm(completeDistance);
+    this.distance = AnalyticsPage.convertDistanceToKm(completeDistance);
 
   }
 
@@ -144,11 +156,10 @@ export class AnalyticsPage implements OnInit {
   async saveJourneyMock() {
     const key = await this.storageService.nextKey();
     this.journeyMock.key = key;
-    this.storageService.create(key, this.journeyMock).then(result => {
-    });
+    await this.storageService.create(key, this.journeyMock);
   }
 
-  private distanceBetweenTwoPoints(lon1: number, lat1: number, lon2: number, lat2: number): number {
+  private static distanceBetweenTwoPoints(lon1: number, lat1: number, lon2: number, lat2: number): number {
     const R = 6371e3;
     const phi1 = lat1 * Math.PI/180;
     const phi2 = lat2 * Math.PI/180;
