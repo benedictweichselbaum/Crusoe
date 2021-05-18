@@ -22,6 +22,19 @@ export class AnalyticsPage implements OnInit {
   public numberOfRoutes: number = 0;
   public numberOfPoints: number = 0;
 
+  public quotes: Array<string> = [
+    "Die Welt ist ein Buch. Wer nie reist, sieht nur eine Seite davon.\nAugustinus Aurelius",
+    "Zögere nie, weit fortzugehen, hinter alle Meere, alle Grenzen, alle Länder, allen Glaubens\nAmin Maalouf",
+    "Das Leben ist eine Reise. Nimm nicht zu viel Gepäck mit\nBilly Idol",
+    "Einmal im Jahr solltest du einen Ort besuchen, an dem du noch nie warst\nDalai Lama",
+    "Wege entstehen dadurch, dass man sie geht\nFranz Kafka",
+    "Reisen macht einen bescheiden. Man erkennt, welch kleinen Platz man in der Welt besetzt\nGustave Flaubert",
+    "Zu reisen ist zu leben\nHans Christian Andersen",
+    "Die beste Bildung findet ein gescheiter Mensch auf Reisen\nJohann Wolfgang von Goethe",
+    "Die gefährlichste aller Weltanschauungen ist die Weltanschauung der Leute, welche die Welt nicht angeschaut haben\nAlexander von Humboldt"
+  ];
+  public currentQuote: string = this.quotes[0];
+
   constructor(
     private storageService: JourneyStorageService,
     private pickerController: PickerController,
@@ -38,6 +51,7 @@ export class AnalyticsPage implements OnInit {
           await this.reloadJourneys();
         }
       });
+    this.changeQuote();
     await this.reloadJourneys();
   }
 
@@ -46,6 +60,16 @@ export class AnalyticsPage implements OnInit {
     this.journeyOptions = ['Alle Reisen'];
     this.journeys.forEach(journey => this.journeyOptions.push(journey.name));
     this.createAnalyticsForAllJourneys();
+  }
+
+  public randomNumber(from: number, to: number): number {
+    return (Math.floor(Math.random() * (to + 1)) + (from + 1)) - 1;
+    // console.log(s);
+    // return s;
+  }
+
+  public changeQuote() {
+    this.currentQuote = this.quotes[this.randomNumber(0, this.quotes.length - 1)];
   }
 
   async showJourneyPicker() {

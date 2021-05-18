@@ -11,6 +11,7 @@ import {filter} from "rxjs/operators";
 import {Point} from '../model/point.model';
 import {ColoredIcons} from '../map/colored-icons';
 import * as Leaflet from 'leaflet';
+import {JourneyEditModalComponent} from "./journey-edit-modal/journey-edit-modal.component";
 
 @Component({
   selector: 'app-journey',
@@ -77,6 +78,21 @@ export class JourneyComponent implements OnInit {
     await this.storageService.readSingleJourney(this.route.snapshot.paramMap.get('id')).then(result => this.certainJourney = result);
     const modal = await this.modalController.create({
       component: JourneyHighlightModalComponent,
+      componentProps: {
+        'journey': this.certainJourney
+      }
+    });
+    modal.onDidDismiss().then(() => {
+      this.addNewHighlightToMap(this.certainJourney.highlights[this.certainJourney.highlights.length - 1],
+        -1, 7);
+    });
+    return await modal.present();
+  }
+
+  async editJourney() {
+    await this.storageService.readSingleJourney(this.route.snapshot.paramMap.get('id')).then(result => this.certainJourney = result);
+    const modal = await this.modalController.create({
+      component: JourneyEditModalComponent,
       componentProps: {
         'journey': this.certainJourney
       }
