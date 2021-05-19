@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {Journey} from "../model/journey.model";
 import {JourneyStorageService} from "../service/services/journey.storage.service";
@@ -15,7 +15,7 @@ import {JourneyEditModalComponent} from "./journey-edit-modal/journey-edit-modal
 import {JourneyDtoModel} from "../model/journey.dto.model";
 import {CrusoeRouteDtoModel} from "../model/crusoe.route.dto.model";
 import {SocialSharing} from "@ionic-native/social-sharing/ngx";
-import { File } from '@ionic-native/file/ngx';
+import {File} from '@ionic-native/file/ngx';
 
 @Component({
   selector: 'app-journey',
@@ -305,42 +305,57 @@ export class JourneyComponent implements OnInit {
     this.map.remove();
   }
 
-  /** Section with share code */
-  private createJson() {
+  async shareJourney() {
     const journey = this.certainJourney;
     const routesDTO = [];
     journey.routes.forEach((route) => {
       routesDTO.push(
-        new CrusoeRouteDtoModel(route.points, route.highlights, route.headline, route.description, route.tags, route.previewPicture, route.departureTimestamp, route.arrivalTimestamp)
+        new CrusoeRouteDtoModel(route.points, route.highlights, route.headline, route.description, route.tags,
+          route.previewPicture, route.departureTimestamp, route.arrivalTimestamp)
       );
     });
-    const journeyDTO = new JourneyDtoModel(routesDTO, journey.name, journey.subtitle, journey.tags, journey.description, journey.ownJourney, journey.departureTimestamp, journey.arrivalTimestamp, journey.highlights, journey.previewPicture);
-    const dataDirectory = this.file.dataDirectory;
-    const fileName = 'MyCrusoeJourney.json';
-    this.file.createFile(dataDirectory, fileName, true);
-    const blob = new Blob([JSON.stringify(journeyDTO, null, 4)], {type: 'application/json'});
-    this.file.writeFile(dataDirectory, fileName, blob, {replace: true, append: false});
-    return dataDirectory + fileName;
+    const journeyDto = new JourneyDtoModel(routesDTO, journey.name, journey.subtitle, journey.tags, journey.description,
+      journey.ownJourney, journey.departureTimestamp, journey.arrivalTimestamp, journey.highlights, journey.previewPicture);
+    await this.shareAsFileOrText(journeyDto);
   }
 
-  shareJourney(){
-    const journey = this.certainJourney;
-    const routesDTO = [];
-    journey.routes.forEach((route) => {
-      routesDTO.push(
-        new CrusoeRouteDtoModel(route.points, route.highlights, route.headline, route.description, route.tags, route.previewPicture, route.departureTimestamp, route.arrivalTimestamp)
-      );
+  async shareAsFileOrText(journeyDto) {
+    const alert = await this.alertController.create({
+      header: 'Reise teilen',
+      message: 'Reise als JSON-Datei oder als Text teilen?',
+      buttons: [
+        {
+          text: 'JSON-Datei',
+          handler: async () => {
+            await this.shareAsJSON(journeyDto);
+          }
+        },
+        {
+          text: 'Text',
+          handler: async () => {
+            await this.shareAsText(journeyDto);
+          }
+        },
+        'Abbrechen'
+      ]
     });
-    const journeyDTO = new JourneyDtoModel(routesDTO, journey.name, journey.subtitle, journey.tags, journey.description, journey.ownJourney, journey.departureTimestamp, journey.arrivalTimestamp, journey.highlights, journey.previewPicture);
+    await alert.present();
+  }
+
+  shareAsJSON(journeyDTO){
     const dataDirectory = this.file.dataDirectory;
     const fileName = 'MyCrusoeJourney.json';
     const path = dataDirectory + fileName;
 
     this.file.createFile(dataDirectory, fileName, true);
-    const blob = new Blob([JSON.stringify(journeyDTO, null, 4)], {type: 'application/json'});
+    const blob = new Blob([JSON.stringify(journeyDTO)], {type: 'application/json'});
     this.file.writeFile(dataDirectory, fileName, blob, {replace: true, append: false});
     this.socialSharing.share('Diese Route habe ich in Crusoe festgehalten. Teile doch auch deine Reisen mit mir!',
       'Meine Reise aus Crusoe', path, null);
     // this.file.removeFile(dataDirectory, fileName);
+  }
+
+  shareAsText(journeyDTO){
+    this.socialSharing.share(JSON.stringify(journeyDTO), null, null);
   }
 }
