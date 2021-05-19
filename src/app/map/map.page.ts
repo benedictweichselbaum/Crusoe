@@ -61,9 +61,11 @@ export class MapPage implements OnInit {
 
     while (index < this.journeys.length) {
       this.journeys[index].routes.forEach((route) => this.setNodesAndEdgesRoute(route, colorIndex));
-
+      this.journeys[index].highlights.forEach((highlight) => {
+        this.addNewHighlightToMap(highlight, 7);
+      });
       index++;
-      if (colorIndex < 8) {
+      if (colorIndex < 7) {
         colorIndex++;
       } else {
         colorIndex = 0;
@@ -96,25 +98,29 @@ export class MapPage implements OnInit {
     }).addTo(this.map);
 
     route.highlights.forEach((highlight) => {
-      this.pictureKey = 0;
-      let image = '';
-      if (highlight.pictures.length > 0) {
-        image = '<img id="imageView" src="' + highlight.pictures[this.pictureKey].path + '" alt="Bilder des Nutzers zum Highlight" (swipe)="swipeEvent($event, highlight)" width="100%"/>';
-      }
-
-      Leaflet.marker([highlight.latitude, highlight.longitude], {icon: ColoredIcons.getColoredIconByIndex(8)}).addTo(this.map)
-        .bindPopup(
-          image + '<br>' +
-          '<b>' + highlight.headline + '</b>' + '<br> <br>' +
-          highlight.description + '<br> <br>' +
-          '<span>Tags: </span>' + highlight.tags.toString() + '<br>' +
-          '<span>Zeitpunkt: </span>' + new Date(highlight.timestamp).toLocaleTimeString('de-DE') + '<br>' +
-          '<span>Breitengrad: </span>' + highlight.latitude.toString() + '<br>' +
-          '<span>Höhengrad: </span>' + highlight.longitude.toString() + '<br>' +
-          '<span>Höhe: </span>' + highlight.height
-        )
-        .openPopup();
+      this.addNewHighlightToMap(highlight, 8);
     });
+  }
+
+  addNewHighlightToMap(highlight, colorIndex){
+    this.pictureKey = 0;
+    let image = '';
+    if (highlight.pictures.length > 0) {
+      image = '<img id="imageView" src="' + highlight.pictures[this.pictureKey].path + '" alt="Bilder des Nutzers zum Highlight" (swipe)="swipeEvent($event, highlight)" width="100%"/>';
+    }
+
+    Leaflet.marker([highlight.latitude, highlight.longitude], {icon: ColoredIcons.getColoredIconByIndex(colorIndex)}).addTo(this.map)
+      .bindPopup(
+        image + '<br>' +
+        '<b>' + highlight.headline + '</b>' + '<br> <br>' +
+        highlight.description + '<br> <br>' +
+        '<span>Tags: </span>' + highlight.tags.toString() + '<br>' +
+        '<span>Zeitpunkt: </span>' + new Date(highlight.timestamp).toLocaleTimeString('de-DE') + '<br>' +
+        '<span>Breitengrad: </span>' + highlight.latitude.toString() + '<br>' +
+        '<span>Höhengrad: </span>' + highlight.longitude.toString() + '<br>' +
+        '<span>Höhe: </span>' + highlight.height
+      )
+      .openPopup();
   }
 
   /** Remove map when we have multiple map object */
