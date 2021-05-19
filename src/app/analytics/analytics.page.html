@@ -98,4 +98,8 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+  <div id="quote" (click)="changeQuote()">
+    <ion-text><em [innerText]="currentQuote"></em></ion-text>
+  </div>
+  <ion-row style="height: 200px"></ion-row>
 </ion-content>

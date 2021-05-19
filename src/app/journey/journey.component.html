@@ -7,6 +7,7 @@
       {{certainJourney.name}}
     </ion-title>
     <ion-buttons slot="end">
+      <ion-button (click)="editJourney()"><ion-icon name="create"></ion-icon></ion-button>
       <ion-button (click)="deleteJourneyAlert()"><ion-icon name="trash"></ion-icon></ion-button>
       <ion-button (click)="shareJourney()"><ion-icon name="share"></ion-icon></ion-button>
     </ion-buttons>
@@ -73,6 +74,12 @@
           </ion-buttons>
         </ion-card-content>
       </ion-card>
+    </ion-item>
+    <ion-item *ngIf="certainJourney.description !== '' && certainJourney.description">
+      <ion-label style="font-size: larger">Beschreibung</ion-label>
+    </ion-item>
+    <ion-item *ngIf="certainJourney.description !== '' && certainJourney.description">
+      <ion-text>{{certainJourney.description}}</ion-text>
     </ion-item>
   </ion-list>
   <ion-row style="height: 220px"></ion-row>

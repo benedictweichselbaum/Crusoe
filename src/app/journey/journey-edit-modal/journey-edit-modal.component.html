@@ -1,10 +1,10 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button (click)="routeBackToJourneyOverview()"></ion-back-button>
+      <ion-back-button (click)="dismissModal()"></ion-back-button>
     </ion-buttons>
     <ion-title>
-        Neue Reise
+      Reise bearbeiten
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -12,10 +12,10 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Neue Reise</ion-title>
+      <ion-title size="large">Reise bearbeiten</ion-title>
     </ion-toolbar>
   </ion-header>
-  <form [formGroup]="creationForm" id="creationFormId">
+  <form [formGroup]="editForm" id="creationFormId">
     <ion-item>
       <ion-label style="font-size: larger">Name deiner Reise</ion-label>
     </ion-item>
@@ -44,7 +44,7 @@
     </ion-item>
     <ion-item>
       <ion-input type="text" formControlName="tag"></ion-input>
-      <ion-button (click)="addNewTag()" [disabled]="this.creationForm.get('tag').value === ''">
+      <ion-button (click)="addNewTag()" [disabled]="this.editForm.get('tag').value === ''">
         Hinzufügen
       </ion-button>
     </ion-item>
@@ -71,8 +71,8 @@
 
 <ion-footer>
   <ion-toolbar>
-    <ion-button [disabled]="!creationForm.valid" type="submit" expand="full" color="primary" (click)="saveNewJourney()">
-      Reise erstellen
+    <ion-button [disabled]="!editForm.valid" type="submit" expand="full" color="primary" (click)="saveNewJourney()">
+      Speichern
     </ion-button>
   </ion-toolbar>
 </ion-footer>

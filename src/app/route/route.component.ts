@@ -27,6 +27,9 @@ export class RouteComponent implements OnInit {
   edge: Leaflet.polyline;
   pictureKey = 0;
 
+  public trackingIsActive: boolean = false;
+  public trackingInterval: number = 5000;
+
   constructor(
     private router: Router,
     private storageService: JourneyStorageService,
@@ -42,6 +45,7 @@ export class RouteComponent implements OnInit {
     const routeIndex = this.route.snapshot.paramMap.get('index');
     this.storageService.readSingleJourney(journeyId).then(result => {
       this.currentJourney = result;
+      this.trackingIsActive = false;
       this.currentRoute = this.currentJourney.routes.find(route => route.index === Number(routeIndex));
     });
   }
@@ -53,6 +57,7 @@ export class RouteComponent implements OnInit {
   }
 
   async routeBackToJourney() {
+    await this.stopTracking();
     await this.router.navigate(['tabs', 'journeys', 'journey', this.route.snapshot.paramMap.get('id')])
   }
 
@@ -108,6 +113,7 @@ export class RouteComponent implements OnInit {
   }
 
   async deleteRoute() {
+    await this.stopTracking();
     this.currentJourney.routes = this.currentJourney.routes.filter(r => r != this.currentRoute);
     await this.storageService.update(this.currentJourney.key, this.currentJourney);
     await this.routeBackToJourney();
@@ -158,6 +164,24 @@ export class RouteComponent implements OnInit {
     this.currentRoute.highlights = this.currentRoute.highlights.filter(h => h != highlight);
     this.removeHighlightFromMap(highlight);
     await this.storageService.update(this.currentJourney.key, this.currentJourney);
+  }
+
+  public async startTracking() {
+    this.trackingIsActive = true;
+    while (this.trackingIsActive) {
+      await this.trackPosition();
+    }
+  }
+
+  public async stopTracking() {
+    this.trackingIsActive = false;
+  }
+
+  private trackPosition() {
+    return new Promise(async resolve => {
+      await this.addNewPoint();
+      setTimeout(resolve, this.trackingInterval);
+    });
   }
 
   /***

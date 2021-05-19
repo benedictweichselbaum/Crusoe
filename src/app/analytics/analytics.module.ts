@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AnalyticsPage } from './analytics.page';
-import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
 
 import { AnalyticsPageRoutingModule } from './analytics-routing.module';
 
@@ -13,7 +12,6 @@ import { AnalyticsPageRoutingModule } from './analytics-routing.module';
     IonicModule,
     CommonModule,
     FormsModule,
-    ExploreContainerComponentModule,
     RouterModule.forChild([{ path: '', component: AnalyticsPage }]),
     AnalyticsPageRoutingModule,
   ],
