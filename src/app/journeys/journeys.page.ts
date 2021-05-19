@@ -60,6 +60,10 @@ export class JourneysPage implements OnInit {
     this.router.navigate(['tabs', 'journeys', 'new'])
   }
 
+  routeToImportJourney() {
+    this.router.navigate(['tabs', 'journeys', 'import'])
+  }
+
   tagStyle(tag: string): string {
     return 'width: ' + tag.length*15 + 'px;';
   }
