@@ -1,12 +1,13 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {Router} from "@angular/router";
-import {JourneyStorageService} from "../service/services/journey.storage.service";
-import {AlertController, ModalController} from "@ionic/angular";
-import {Highlight} from "../model/highlight.model";
-import {Journey} from "../model/journey.model";
-import {CrusoeRoute} from "../model/crosoe.route.model";
-import {JourneyDtoModel} from "../model/journey.dto.model";
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+import {JourneyStorageService} from '../service/services/journey.storage.service';
+import {AlertController, ModalController} from '@ionic/angular';
+import {Highlight} from '../model/highlight.model';
+import {Journey} from '../model/journey.model';
+import {CrusoeRoute} from '../model/crosoe.route.model';
+import {JourneyDtoModel} from '../model/journey.dto.model';
+import {CrusoeRouteDtoModel} from '../model/crusoe.route.dto.model';
 
 @Component({
   selector: 'app-journey-import',
@@ -23,7 +24,6 @@ export class JourneyImportComponent implements OnInit {
     private storageService: JourneyStorageService,
     private formBuilder: FormBuilder,
     private alertController: AlertController,
-    public modalController: ModalController,
   ) {
     this.creationForm = this.formBuilder.group({
       rawJourneyDtoAsJson: ['', Validators.required],
@@ -59,6 +59,19 @@ export class JourneyImportComponent implements OnInit {
       pic);
   }
 
+  private mapCrusoeRouteDtoToCrusoeRoute(crusoeRouteDto: CrusoeRouteDtoModel, journey: Journey){
+    return new CrusoeRoute(this.getNextRouteIndex(journey), crusoeRouteDto.points, crusoeRouteDto.highlights, crusoeRouteDto.headline, crusoeRouteDto.description,
+      crusoeRouteDto.tags, crusoeRouteDto.previewPicture, crusoeRouteDto.departureTimestamp, crusoeRouteDto.arrivalTimestamp);
+  }
+
+  private getNextRouteIndex(journey) {
+    let maxIndex = 0;
+    journey.routes.forEach(route => {
+      maxIndex = Math.max(maxIndex, route.index);
+    });
+    return maxIndex + 1;
+  }
+
   async saveImportedJourney(){
     const data = this.creationForm.get('rawJourneyDtoAsJson').value;
     try {
@@ -73,7 +86,14 @@ export class JourneyImportComponent implements OnInit {
       if (journeyAlreadyExists) {
         await this.showAlertWhenInvalid('Eine Reise mit diesem Namen existiert leider schon. Korrigiere deine Eingabe.');
       } else {
-        const newJourney: Journey = await this.createNewJourney(journeyDto.name, journeyDto.subtitle, journeyDto.tags, journeyDto.description, journeyDto.ownJourney, journeyDto.departureTimestamp, journeyDto.arrivalTimestamp, journeyDto.highlights, journeyDto.previewPicture);
+        const newJourney: Journey = await this.createNewJourney(journeyDto.name, journeyDto.subtitle, journeyDto.tags, journeyDto.description,
+          journeyDto.ownJourney, journeyDto.departureTimestamp, journeyDto.arrivalTimestamp, journeyDto.highlights, journeyDto.previewPicture);
+
+        journeyDto.routes.forEach((routeDto) => {
+          const route = this.mapCrusoeRouteDtoToCrusoeRoute(routeDto, newJourney);
+          newJourney.routes.push(route);
+        });
+
         this.storageService.create(newJourney.key, newJourney).then(result => {
           this.routeBackToJourneyOverview();
         }).catch((err) => console.log(err));
