@@ -38,3 +38,8 @@
 #container a {
   text-decoration: none;
 }
+
+ion-img{
+  height: 10rem;
+  display: block; /* remove extra space below image */
+}

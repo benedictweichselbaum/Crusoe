@@ -18,11 +18,10 @@
   <div *ngIf="journeys.length != 0">
     <ion-searchbar placeholder="Suche" (ionInput)="searchJourneys($event)"></ion-searchbar>
     <ion-list>
-      <ion-item *ngFor="let journey of shownJourneys" button (click)="routeToJourney(journey.key)">
+      <ion-item *ngFor="let journey of shownJourneys" button (click)="routeToJourney(journey.key)" class="ion-float-md-left ion-float-md-right">
         <ion-card>
           <ion-img *ngIf="journey.previewPicture !== ''"
                    [src]="journey.previewPicture"
-                   style="width: 15rem; height: 10rem"
           >
           </ion-img>
           <ion-card-header>
