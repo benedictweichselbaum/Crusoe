@@ -103,10 +103,10 @@ export class JourneyComponent implements OnInit {
         'journey': this.certainJourney
       }
     });
-    modal.onDidDismiss().then(() => {
-      this.addNewHighlightToMap(this.certainJourney.highlights[this.certainJourney.highlights.length - 1],
-        -1, 7);
-    });
+    // modal.onDidDismiss().then(() => {
+      // this.addNewHighlightToMap(this.certainJourney.highlights[this.certainJourney.highlights.length - 1],
+       // -1, 7);
+    // });
     return await modal.present();
   }
 
