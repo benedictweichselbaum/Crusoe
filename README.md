@@ -8,10 +8,14 @@ Crusoe ermöglicht es dem Anwender alle seine Reisen digital in einem Reisetageb
   - Erfassung mehrerer Routen
   - Erfassung von Reisehighlights
   - Textuelle Beschreibung
+  - Editieren von Reisen
+  - Import und Export von Reisen (textuell)
+  - Export von Reisen als JSON
 - Sichern von Routen
   - Erfassung von Routenpunkten: GPS-Koordinaten, Zeitstempel
   - Erfassung von Routenhighlights
   - Textuelle Beschreibung
+  - Automatisiertes Tracking mit geöffneter App
 - Highlights (sowohl für Routenhighlights als auch für Reisehighlights möglich)
   - GPS-Koordinate
   - Bilder (aus der Galerie und per selbsterstellten Foto)
@@ -29,7 +33,7 @@ Crusoe ermöglicht es dem Anwender alle seine Reisen digital in einem Reisetageb
 - Die Karten in der App wurden mit Leaflet realisiert und basieren auf [OpenStreetMap](https://www.openstreetmap.org/copyright)
 
 ## Architekturdokumentation
-In ihrer Grobstruktur ist die App äußerst einfach aufgebaut, da sie kein verteiltes System ist. Die App funktioniert standalone und hat keine weiteren Abhängigkeiten als sich selbst. Es wird deshalb auch keine aktive Internetverbindung bei der Nutzung benötigt. Die alleinstehende App-Komponente selbst beinhaltet damit sowohl Oberflächenbeschreibung als auch die Programmlogik und die Datenhaltung.
+In ihrer Grobstruktur ist die App äußerst einfach aufgebaut, da sie kein verteiltes System ist. Die App funktioniert standalone und hat keine weiteren Abhängigkeiten als sich selbst. Es wird deshalb auch keine aktive Internetverbindung für eine einfache Nutzung benötigt. Die Darstellung von Karten ist jedoch nur mit aktiver Internetverbindung möglich. Die alleinstehende App-Komponente selbst beinhaltet damit sowohl Oberflächenbeschreibung als auch die Programmlogik und die Datenhaltung.
 
 Bei der Feinstruktur muss sich die App am Angular-Framework und dessen Framework-Komponenten orientieren. Der Angular-Code selbst ist bei der App in Module und Komponenten gegliedert, wobei eine Modul potenziell mehrere Komponenten verwalten kann. Die jeweiligen Teile der App sind eigenständige Angular-Module mit meist einer Komponente. Teils gibt es auch weitere Komponenten, wo es nötig war. Eine Komponente enthält dabei Angular-typisch eine Beschreibung der Oberfläche mittels HTML, ein Cascading-Style-Sheet für die Design-Beschreibung und ein Typescript-File zur Programmierung der Komponente. 
 
